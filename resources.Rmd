@@ -1,0 +1,53 @@
+---
+title: Course resources
+---
+
+## Interested in taking this course and want prepare over the summer? 
+
+Some things you can do to help prepare would be to take [DataCamp](https://www.datacamp.com/) courses. For example, the [learn statistics with r](https://www.datacamp.com/tracks/learn-statistics-with-r) is a godo one, but there are many others depending on what you are looking for. 
+
+We will use the R programming language. To learn more about R, follow these tutorials: 
+
+* [Getting started with R](https://rafalab.github.io/dsbook/getting-started.html)
+* [Installing R](https://rafalab.github.io/dsbook/getting-started.html#installing-r)
+* [The very basics in R](https://rafalab.github.io/dsbook/the-very-basics.html)
+
+Some specific R packages that will be heavily used are in the [tidyverse](https://www.tidyverse.org) such as ggplot2, dplyr, and tidyr. Working through tutorials that use the functions in these packages will be helpful in terms of prepartion. 
+
+This course will be very hands-on and focused on analyzing real-world data both in the lectures and as homework assignments. We will not go into too many details about the statistical methods themselves (just will refer students to other courses where you can learn about the theoretical aspects of the methods). Rather, we hope to provide the intuition of _why_ a particular method is relevant, appropriate, or not appropriate for a given type of data, data set or application. If you feel uncomfortable with certain statistical concepts, we would suggest refresh this summer. As a reminder, this is a PhD level class for our PhD students in Biostatistics, it assumes knowledge of R and some statistical knowledge and moves relatively quickly. Generally speaking, [biostatistics 620](https://www.jhsph.edu/courses/course/25916/2018/140.621.01/statistical-methods-in-public-health-i) is not sufficient to prepare you for this data science series. 
+
+
+## Previous versions of the class
+
+* [2017](http://jtleek.com/advdatasci)
+* [2016](http://jtleek.com/advdatasci16/)
+* [2015](http://jtleek.com/advdatasci15/)
+* [2014](https://github.com/jtleek/jhsph753and4)
+
+## Books of interest
+
+* [Elements of Data Analytic Style](https://leanpub.com/datastyle)
+* [R programming](https://leanpub.com/rprogramming)
+* [R for Data Science](http://r4ds.had.co.nz)
+* [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
+* [Elements of statistical learning](https://web.stanford.edu/~hastie/ElemStatLearn/)
+* [Advanced data analysis from an elementary point of view](http://www.stat.cmu.edu/~cshalizi/ADAfaEPoV/)
+* [Advanced Statistical Computing](https://leanpub.com/advstatcomp)
+
+## Blog posts of interest
+
+* [The four eras of data](https://simplystatistics.org/2016/12/16/the-four-eras-of-data/)
+* [Graduate student data analysis inspired by a high-school teacher](https://simplystatistics.org/2011/10/22/graduate-student-data-analysis-inspired-by-a/)
+* [What statistics should do about big data: problem forward not solution backward](https://simplystatistics.org/2013/05/29/what-statistics-should-do-about-big-data-problem-forward-not-solution-backward/)
+* [The key word in "Data Science" is not Data, it is Science](https://simplystatistics.org/2013/12/12/the-key-word-in-data-science-is-not-data-it-is-science/)
+
+## Journal articles of interest
+
+* [Good enough practices in scientific computing](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510)
+* [Excuse me, do you have a moment to talk about version control?](https://peerj.com/preprints/3159/)
+
+## Other resources
+
+* [Rstudio's cheatsheets](http://www.rstudio.com/resources/cheatsheets/)
+* [swirl](http://swirlstats.com/)
+* [DataCamp](https://www.datacamp.com/)

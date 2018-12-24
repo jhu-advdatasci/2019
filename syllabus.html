@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Syllabus</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 61px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h2 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h3 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h4 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h5 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.section h6 {
+  padding-top: 66px;
+  margin-top: -66px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Advanced Data Science</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+<li>
+  <a href="homework.html">Homework</a>
+</li>
+<li>
+  <a href="projects.html">Projects</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Staff
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Instructors</li>
+    <li>
+      <a href="http://stephaniehicks.com/">Stephanie Hicks</a>
+    </li>
+    <li>
+      <a href="http://www.biostat.jhsph.edu/~rpeng/">Roger Peng</a>
+    </li>
+    <li class="dropdown-header">Teaching Assistants</li>
+    <li class="dropdown-header">TBA</li>
+  </ul>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+<li>
+  <a href="resources.html">Resources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jhu-advdatasci/2019">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Syllabus</h1>
+
+</div>
+
+
+<p>Welcome to Advanced Data Science! This course will focus on hands-on data analyses with a main objective of solving real-world problems. We will teach the necessary skills to gather, manage and analyze data using the R programming language. The course will cover an introduction to data wrangling, exploratory data analysis, statistical inference and modeling, machine learning, and high-dimensional data analysis. We will teach the necessary skills to develop data products including reproducible reports that can be used to effectively communicate results from data analyses. We will train students to become data scientists capable of both applied data analysis and critical evaluation of the next generation next generation of statistical methods.</p>
+<div id="course-objectives" class="section level3">
+<h3>Course objectives</h3>
+<p>Upon successfully completing this course, students will be able to:</p>
+<ol style="list-style-type: decimal">
+<li>Formulate quantitative models to address scientific questions</li>
+<li>Obtain, clean, transform, and process raw data into usable formats</li>
+<li>Organize and perform a complete data analysis, from exploration, to analysis, to synthesis, to communication</li>
+<li>Apply a range of statistical methods for inference and prediction</li>
+<li>Build data science products that can be used by a broad audience</li>
+</ol>
+</div>
+<div id="course-logistics" class="section level1">
+<h1>Course logistics</h1>
+<div id="pre-requisites" class="section level3">
+<h3>Pre-requisites</h3>
+<p>This course is designed for PhD students in the Biostatistics department at Johns Hopkins Bloomberg School of Public Health. It assumes a fair amount of statistical knowledge and moves relatively quickly. I am open to anyone taking the class, but since it is a core requirement for our PhD program I will not be slowing down or allowing auditors for the class.</p>
+</div>
+<div id="required-textbook" class="section level3">
+<h3>Required Textbook</h3>
+<p>None. Instead, we have a list of recommended readings on the web site available at <a href="resources.html">Resources</a>.</p>
+</div>
+<div id="course-communication" class="section level3">
+<h3>Course Communication</h3>
+<p>We will use Slack to organize course discussions. There are channels to ask questions and discuss the lectures, homework assignments, and final projects. The channels will be monitored by the TA during class. We will also use Slack for all annoucments, so it is important that you are signed up. Feel free to ask questions during class, or anytime.</p>
+</div>
+<div id="office-hours" class="section level3">
+<h3>Office hours</h3>
+<div id="term-1" class="section level4">
+<h4>Term 1</h4>
+<p>TBA</p>
+</div>
+</div>
+</div>
+<div id="course-components" class="section level1">
+<h1>Course components</h1>
+<p>We break down the course components and grading into two terms:</p>
+<div id="advanced-data-science-i" class="section level4">
+<h4>140.711.01 Advanced Data Science I</h4>
+<p>We will learn these concepts through hands-on data analysis assignments. Specficially, grades will be based on:</p>
+<ul>
+<li>3 homeworks (33.3% each)</li>
+</ul>
+</div>
+<div id="advanced-data-science-ii" class="section level4">
+<h4>140.712.01 Advanced Data Science II</h4>
+<p>We will learn these concepts through hands-on data analysis assignments. Specficially, grades will be based on:</p>
+<ul>
+<li>2 homeworks (25% each)</li>
+<li>1 final project (50%)</li>
+</ul>
+</div>
+<div id="homework" class="section level3">
+<h3>Homework</h3>
+<p>Homework will be submitted using git/GitHub and will be due at midnight on Fridays (unless otherwise stated). We will cover more about this in the second lecture. The last commit before midnight will be used to grade the assignment.</p>
+</div>
+<div id="collaboration-policy" class="section level3">
+<h3>Collaboration Policy</h3>
+<p>You are welcome and encouraged to discuss the lectures and homework problems with others in order to better understand it, but the <strong>work you turn in must be your own</strong>. For example, you must write your own code, run your own data analyses, and communicate and explain the results in your own words and with your own visualizations. You may not submit the same or similar work to this course that you have submitted or will submit to another. All students turning in plagiarized solutions will be reported to <a href="https://www.jhsph.edu/offices-and-services/office-of-academic-affairs/academic-integrity/index.html">Office of Academic Integrity</a>, and will fail the assignment.</p>
+</div>
+<div id="quoting-sources" class="section level3">
+<h3>Quoting Sources</h3>
+<p>You must acknowledge any source code that was not written by you by mentioning the original author(s) directly in your source code (comment or header). You can also acknowledge sources in a README.txt file if you used whole classes or libraries. Do not remove any original copyright notices and headers. However, you are encouraged to use libraries, unless explicitly stated otherwise!</p>
+<p>You may use examples you find on the web as a starting point, provided its license allows you to re-use it. You must quote the source using proper citations (author, year, title, time accessed, URL) both in the source code and in any publicly visible material. You may not use existing complex combinations or large examples. For example, you may not use a ready to use multiple linked view visualization. You may use parts out of such examples.</p>
+</div>
+<div id="final-project" class="section level3">
+<h3>Final Project</h3>
+<p>At the beginning of the second term, you will start to work on a data science final project. The goal of the project is to go through the complete data science process to answer questions you have about some topic of your own choosing. You will acquire the data, design your visualizations, run statistical analysis, and communicate the results. You will have the opportunity to meet with either a TA or instructor at the beginning to initially help guide you in this project. You will have approximately three weeks at the end of term to focus on the final project.</p>
+<p>You will work closely with other classmates in a 2-4 (max) person project team. You can come up with your own teams and use Slack to find prospective team members. We recognize that individual schedules, preferences, and other constraints might limit your ability to work in a team. If this the case, ask us for permission to work alone. However, you will still be expected to complete all portions of the final project on your own.</p>
+</div>
+<div id="missed-activities-and-assignment-deadlines" class="section level3">
+<h3>Missed Activities and Assignment Deadlines</h3>
+<p>Projects and homework must be turned in on time, with the exception of late days for homeworks as stated below. It is important that everybody attends and proactively participates in class and online. We understand, however, that certain factors may occasionally interfere with your ability to participate or to hand in work on time. If that factor is an extenuating circumstance, we will ask you to provide documentation directly issued by the University, and we will try to work out an agreeable solution with you (and/or your teammates).</p>
+</div>
+<div id="late-day-policy" class="section level3">
+<h3>Late Day Policy</h3>
+<p>Each student is given three late days for homework at the beginning of each term (711 and 712). A late day extends the individual homework deadline by 24 hours without penalty. No more than two late days may be used on any one assignment. Late days are intended to give you flexibility: you can use them for any reason no questions asked. You do not get any bonus points for not using your late days. Also, you can only use late days for the homework deadlines.</p>
+<p>Although the each student is only given a total of 3 late days, we will be accepting homework from students that pass this limit. However, we will be deducting 10% for each extra late day. For example, if you have already used all of your late days for the term, we will deduct 10% for the assignment that is &lt;24 hours late, and 20% points for the assignment that is 24-48 hours late.</p>
+</div>
+<div id="regrading-policy" class="section level3">
+<h3>Regrading Policy</h3>
+<p>It is very important to us that all assignments are properly graded. If you believe there is an error in your assignment grading, please send an email to one of the instructors within 7 days of receiving the grade. No re-grade requests will be accepted orally, and no regrade requests will be accepted more than 7 days after you receive the grade for the assignment.</p>
+</div>
+</div>
+<div id="additional-information" class="section level1">
+<h1>Additional Information</h1>
+<div id="accessibility" class="section level3">
+<h3>Accessibility</h3>
+<p>If you have a documented disability (physical or cognitive) that may impair your ability to complete assignments or otherwise participate in the course and satisfy course criteria, please meet with us at your earliest convenience to identify, discuss, and document any feasible instructional modifications or accommodations. You should also contact the <a href="https://studentaffairs.jhu.edu/disabilities/">Office of Student Disability Services</a> to request an official letter outlining authorized accommodations.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
