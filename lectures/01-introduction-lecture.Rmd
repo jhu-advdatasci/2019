@@ -1,0 +1,20 @@
+---
+title: Welcome to Advanced Data Science
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Important links today: 
+
+* [Click here](https://docs.google.com/presentation/d/1NjTbUk5lZiWIded2DAUB9z5pzIRZbPRkNFea6jdpTZE/edit?usp=sharing) to follow along with course introduction slides
+* Course website: [https://jhu-advdatasci.github.io/2019](https://jhu-advdatasci.github.io/2019)
+* GitHub repository with all course material: [https://github.com/jhu-advdatasci/2019](https://github.com/jhu-advdatasci/2019)
+
+Assignments: 
+
+* Please fill out the [Fall 2019 Course Survey](https://forms.gle/9HJ6DhLDmmnEoHrG8) by September 14, 2019 at 11:59pm
+* Homework 0 is now available and is due **September 11, 2019 at 11:59pm**. 
+  * To access, sign up for [GitHub.com](http://github.com), read [GitHub Classroom for Students](https://github.com/jfiksel/github-classroom-for-students) and then click [here](). 
