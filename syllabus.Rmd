@@ -44,7 +44,7 @@ We break down the course components and grading into two terms:
 
 We will learn these concepts through hands-on data analysis assignments. Specficially, grades will be based on: 
 
-* 3 homeworks (33.3% each)
+* 6 homeworks (16.6% each)
 
 #### 140.712.01 Advanced Data Science II
 
@@ -56,7 +56,7 @@ We will learn these concepts through hands-on data analysis assignments. Specfic
 
 ### Homework
 
-Homework will be submitted using git/GitHub and will be due at midnight on Fridays (unless otherwise stated). We will cover more about this in the second lecture. The last commit before midnight will be used to grade the assignment. 
+Homework will be submitted using git/GitHub and will be due at midnight on Wednesdays in term 1 and Fridays in term 2 (unless otherwise stated). The last commit before midnight will be used to grade the assignment. 
 
 ### Collaboration Policy 
 
