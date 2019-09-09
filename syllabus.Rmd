@@ -28,13 +28,14 @@ None. Instead, we have a list of recommended readings on the web site available 
 
 ### Course Communication
 
-We will use Slack to organize course discussions. There are channels to ask questions and discuss the lectures, homework assignments, and final projects. The channels will be monitored by the TA during class. We will also use Slack for all annoucments, so it is important that you are signed up. Feel free to ask questions during class, or anytime. 
+We will use Slack to organize course discussions. There are channels to ask questions and discuss the lectures, homework assignments, and final projects. The channels will be monitored by the TA during class. We will also use Slack for all annoucements, so it is important that you are signed up. Feel free to ask questions during class, or anytime. 
 
 ### Office hours
 
-#### Term 1
-
-TBA
+Staff          | Day, Time         | Location      |
+ :------------ | :---------------  | :-----------  |
+Guoqing        | Fri, 11:30am-12:30pm | E3037         |
+Athena         | Tues, 12-1pm         | E3035         |
 
 # Course components
 

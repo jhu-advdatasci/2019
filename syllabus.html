@@ -7,7 +7,6 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -86,6 +85,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -246,6 +246,18 @@ $(document).ready(function () {
 }
 </style>
 
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
 <!-- code folding -->
 
 
@@ -356,14 +368,31 @@ $(document).ready(function () {
 </div>
 <div id="course-communication" class="section level3">
 <h3>Course Communication</h3>
-<p>We will use Slack to organize course discussions. There are channels to ask questions and discuss the lectures, homework assignments, and final projects. The channels will be monitored by the TA during class. We will also use Slack for all annoucments, so it is important that you are signed up. Feel free to ask questions during class, or anytime.</p>
+<p>We will use Slack to organize course discussions. There are channels to ask questions and discuss the lectures, homework assignments, and final projects. The channels will be monitored by the TA during class. We will also use Slack for all annoucements, so it is important that you are signed up. Feel free to ask questions during class, or anytime.</p>
 </div>
 <div id="office-hours" class="section level3">
 <h3>Office hours</h3>
-<div id="term-1" class="section level4">
-<h4>Term 1</h4>
-<p>TBA</p>
-</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Staff</th>
+<th align="left">Day, Time</th>
+<th align="left">Location</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Guoqing</td>
+<td align="left">Fri, 11:30am-12:30pm</td>
+<td align="left">E3037</td>
+</tr>
+<tr class="even">
+<td align="left">Athena</td>
+<td align="left">Tues, 12-1pm</td>
+<td align="left">E3035</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="course-components" class="section level1">
@@ -441,23 +470,6 @@ $(document).ready(function () {
 
 
 </script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
