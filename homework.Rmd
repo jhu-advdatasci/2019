@@ -2,7 +2,7 @@
 title: Homework
 ---
 
-Homework assignments and solutions will be added here throughout the courses. 
+Homework assignments will be added here throughout the courses. 
 
 ## 711 
 
@@ -10,6 +10,12 @@ Homework assignments and solutions will be added here throughout the courses.
 
   * Due Wednesday, September 11, 2019 by 11:59pm
   * Assignment ([HTML](https://jhu-advdatasci.github.io/2019/homeworks/711-hw0-assignment.html), [GitHub](https://github.com/jhu-advdatasci/2019/blob/master/homeworks/711-hw0-assignment.Rmd))
+
+### Homework 1
+
+  * Part 1 Due: Friday September 13, 2019 by 11:59pm
+  * Part 2 Due: Wednesday, September 18, 2019 by 11:59pm
+  * Assignment ([HTML](https://jhu-advdatasci.github.io/2019/homeworks/711-hw1-assignment.html), [GitHub](https://github.com/jhu-advdatasci/2019/blob/master/homeworks/711-hw1-assignment.Rmd))
 
 
 ## 712
