@@ -1,0 +1,213 @@
+---
+title: "Homework 3: Analyzing Twitter Data"
+output:
+  html_document:
+    highlight: tango
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+#### Preface 
+
+* **This homework is due Wednesday October 2, 2019 at 11:59 PM**. 
+* When you have completed the assignment, knit the R Markdown, commit your changes and push to GitHub.
+* If you do not include axis labels and plot titles, then points will be deducted.
+* You are welcome and encouraged to discuss homework problems with others in order to better understand it, but the work you turn in must be your own. You must write your own code, data analyses, and communicate and explain the results in your own words and with your own visualizations. **All students turning in plagiarized solutions will be reported to Office of Academic Integrity, and will fail the assignment**.
+
+
+# Motivation 
+
+Analyzing data often requires working with datasets or databases 
+that someone else created with different problems and audiences 
+in mind. In this homework, you will continue to work on addressing
+the same problem that you worked on Homework 1:
+
+> The goal of this homework is to download Twitter data in preparation 
+for being able to identify tweets as "pro" or "anti" vaccination (e.g.
+identify Twitter users and tweets that are "anti-vaccination." or e.g. 
+identify the sentiment of tweets). Tweets often have an associated 
+location, thus this would allow researchers to locate communities 
+where anti-vaccination sentiment is growing. This could help
+healthcare professionals identify communities that are at 
+higher risk of infectious diseases.
+
+Your goal is to implement your data analysis plan that you developed in 
+Homework 1, but instead of working with the dataset that you created,
+you will work with the dataset that someone else created. You will be 
+randomly assigned someone else's dataset that they created in HW1. 
+
+
+# Problem 1
+
+We have randomly assigned individuals using the `sample()` function 
+in the code below. We only include first names here. 
+Identify the person that you have been randomly assigned to, connect
+with the individual (either in class, by email, or on slack) and ask 
+them to share their `twitter_data.csv` file that they created in HW1.
+Save this new dataset as `twitter_data_hw2.csv` into **your** HW2 
+GitHub repo. This is the data you will use for your HW2. 
+
+```{r}
+student_names <- c("Brian", "Erjia", "Eric", "Elizabeth", 
+                   "Grant", "Haley", "Jennifer (Shiyao)",
+                   "Jiyang", "Joe", "Jingning", "Linda", 
+                   "Kate (Yueyi)", "Runzhe", "Yifan", "Zebin")
+
+set.seed(12345)
+data.frame("for_HW2" = student_names, 
+           "use_this_data_from_HW1" = student_names[sample(seq_along(student_names))])
+```
+
+Load the data into R using the `readr` package. 
+
+```{r}
+## add your code here
+
+```
+
+
+# Problem 2
+
+When working with data that someone else created, you often 
+find that you will need to make modifications to your 
+expectations or data analysis plan. Explore the new dataset 
+and make adjustments (if applicable) to your data analysis plan 
+that you developed in HW1. 
+
+Specifically, give the following: 
+
+1. Summarize what your original
+data analysis plan was in HW1 (much of this can be copy
+and paste). 
+2. What remains the same between what you originally proposed
+and what you are now proposing? 
+3. What are you changing (if applicable) in your data analysis 
+plan given that you have a different dataset to work with. 
+For example, you could describe data you are now missing or 
+new data that you now have and how this will impact your plan. 
+4. Describe **in great detail** your updated data analysis plan. 
+This should include what you will need to do in terms of data 
+tidying, wrangling, exploratory data analysis, data visualization 
+and any modeling / analyses that you would like to 
+complete to accomplish the goal above. Clearly state who your 
+target audience is and think carefully about what audience you 
+have in mind as you build your data analysis plan. 
+5. Thinking about your data analysis plan, what elements and 
+principles of data analysis are you prioritizing as you build 
+the analysis? Create a rubric (like you did in HW1) to describe
+what elements and principles you want to prioritize. 
+Identify a set of principles that this audience 
+might be interested in with corresponding weights $w_i$. 
+The number of principles ($N$) must be at least 4 ($N \geq 4$). 
+
+As a reminder, if there were only two principles, an example 
+rubric might look like: 
+
+```{r}
+rubric <- data.frame(principle = rep(c("reproducbility", "exhaustive"),2),
+                     weight = rep(c(0.1, 0.9), 2))
+rubric
+```
+
+
+#### Add your answer here
+
+Feel free to explore the data and give summary statistics or 
+plot to help support the changes in your new data analysis plan. 
+
+```{r}
+## add your code here
+
+```
+
+#### Add your answer here
+
+
+
+# Problem 3
+
+Implement your updated data analysis plan described in 
+Problem 2. Using 
+[literate programming](https://en.wikipedia.org/wiki/Literate_programming), 
+weave together elements of data analysis (e.g. code chunks 
+with narrative text explaining what you are doing) 
+as you implement your data analysis plan
+with the goal in mind described in the Motivation section.
+Keep in mind the principles of data analysis that you described
+in Problem 2. 
+
+**Helpful hints**: Here are some packages that you might 
+find helpful. 
+
+|Library|Purpose|
+|---|---|
+|`stringr`|Parsing text with regular expressions|
+|`tidytext`|Loading relevant Natural Language Processing (NLP) datasets and manipulating text data|
+|`dplyr`|Dataframe manipulation|
+|`ggplot2`|Data visualization|
+|`wordcloud`|Creating wordcloud visuals|
+|`SnowballC`|Word stemming|
+|`tm`|Document Term Matrix Class|
+|`topicmodels`|Applying Latent Dirichlet allocation|
+|`kableExtra`|Formatting output into tables|
+|`localgeo`|Converting city data to latitude and longitude|
+
+
+```{r}
+## add your code here
+
+```
+
+# Problem 4
+
+Self evaulation. Create a rubric (like you did in HW1) to
+evaluate the analysis that you built in Problem 3
+while keeping in mind who the audience was 
+defined to be. Modify the rubric in Problem 2 to 
+and assign integer scores $S_i \in [0, 10]$
+that represents how much the given data analysis exhibits this
+principle where 0 is low and 10 is high. The number of principles 
+($N$) must be at least 4 ($N \geq 4$). 
+
+For example if the principle is _reproduciblity_, give a score 
+between 0 and 10 on how reproducible individual parts or the 
+overall analysis (up to you) is where 0 is not reproducible
+and 10 is reproducible. 
+
+As a reminder, if there were only two principles, an example 
+rubric might look like: 
+
+```{r}
+rubric <- data.frame(principle = rep(c("reproducbility", "exhaustive"),2),
+                     weight = rep(c(0.1, 0.9), 2),
+                     score = c(10, 4, 2, 6))
+rubric
+```
+
+Describe in words about why you gave the scores that you did. 
+
+```{r}
+## add your code here
+
+```
+
+#### Add your answer here
+
+
+What challenges did you face implementing the updated data 
+analysis plan (excluding the random assignment of a new dataset)? 
+
+#### Add your answer here
+
+
+# Problem 5
+
+Summarize the results from your data analysis implemented in 
+Problem 3. Communicate the important ideas in a clear and 
+concise manner. Keep in mind who your target audience is.
+
+#### Add your answer here
