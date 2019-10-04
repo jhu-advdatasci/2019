@@ -1,0 +1,250 @@
+---
+title: "Homework 4: Evaluating and Summarizing Data Analyses"
+output:
+  html_document:
+    highlight: tango
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+#### Preface 
+
+* **This homework is due Wednesday October 9, 2019 at 11:59 PM**. 
+* When you have completed the assignment, knit the R Markdown, commit your changes and push to GitHub.
+* If you do not include axis labels and plot titles, then points will be deducted.
+* If you do not include prose/text after the sections titled "Add your answer here", then points will be deducted. 
+* You are welcome and encouraged to discuss homework problems with others in order to better understand it, but the work you turn in must be your own. You must write your own code, data analyses, and communicate and explain the results in your own words and with your own visualizations. **All students turning in plagiarized solutions will be reported to Office of Academic Integrity, and will fail the assignment**.
+
+# Motivation
+
+One important skill in data science is to be able to **evaluate**
+data analyses that you build, from your peers / colleagues, 
+or data analyses that you see in the wild. In HW1 and HW4, 
+you practiced the skills of critiquing and evaulating 
+data analyses. 
+
+A second important skill is being able to **summarize** the key 
+ideas in a data analysis that either you built or one that is 
+presented to you. 
+
+In this homework assignment, you will practice both of these skills. 
+Your goal is to evaluate and summarize a data analysis. But instead 
+of working with a dataset and data analysis that you created, you 
+will work with a set that someone else created. You will be 
+randomly assigned someone else's dataset and analysis that they
+created in HW3. 
+
+
+# Problem 1
+
+We have randomly assigned individuals using the `sample()` function 
+in the code below. We only include first names here. 
+Identify the person that you have been randomly assigned to, connect
+with the individual (either in class, by email, or on slack) and ask 
+them to share their `twitter_data_hw2.csv` file that they started with
+in HW3 and their `711-hw3-assignment.Rmd` that they built in HW3. 
+Save both of these into into **your** HW4 GitHub repo. This is 
+the data and data analysis you will use for your HW4. 
+
+```{r}
+student_names <- c("Brian", "Erjia", "Eric", "Elizabeth", 
+                   "Grant", "Haley", "Jennifer (Shiyao)",
+                   "Jiyang", "Joe", "Jingning", "Linda", 
+                   "Kate (Yueyi)", "Runzhe", "Yifan", "Zebin")
+
+set.seed(123)
+student_names <- student_names[sample(seq_along(student_names))]
+
+set.seed(111)
+data.frame("for_HW4" = student_names, 
+           "use_this_data_from_HW3" = student_names[sample(seq_along(student_names))])
+```
+
+Identify the person that you have been randomly assigned to and 
+get access to 
+
+1. the `twitter_data_hw2.csv` file that they used in HW3
+2. their data analysis (e.g. the `.Rmd`) that they built in HW3
+
+Read the data analysis closely that they built (the `.Rmd`) and 
+make sure you can reproduce their analysis results by kniting 
+the RMarkdown document. Then, load the data into R using the 
+`readr` package. 
+
+```{r}
+## add your code here
+
+```
+
+
+# Problem 2
+
+Relfect on the analysis and answer the following questions: 
+
+1. In terms of data storytelling and narrative, what is the 
+central argument to this data analysis? 
+2. What aspects of the analysis are included that support the 
+story? Why do you believe these support the story? 
+3. Are there any trust building elements? Why or why not? 
+4. Do you believe the results of the analysis? Why or why not? 
+5. What are some ways that the data and/or results could be 
+misinterpreted? 
+
+#### Add your answer here
+
+
+
+# Problem 3 
+
+Identify who was the audience that this analysis was built for
+(this should be clearly stated in the analysis in HW3; if not, 
+then make an educated guess). 
+
+Describe the audience here: 
+
+#### Add your answer here
+
+
+Create a rubric (like you did in HW1
+and a self evaluation in HW3) to evaluate the data analyst's 
+analysis while keeping in mind who the audience was defined to 
+be. As part of HW3, the analyst has provide a set of principles 
+(HW3, Problem 2) that they prioritized when building the analysis.
+They also provided a self-evaluation (HW3, Problem 4). 
+
+Now, you have the opportunity to also evaluate this analysis. 
+Using the data analysis principles and corresponding weights 
+$w_i$ defined in HW3 by the data analyst, assign integer 
+scores $S_i \in [0, 10]$ that represents how much the
+given data analysis exhibits this principle where 0 is 
+low and 10 is high. The scores can be similar (or different) 
+than what was provided in HW3 by the data analyst.
+
+For example if the principle is _reproduciblity_, give a score 
+between 0 and 10 on how reproducible individual parts or the 
+overall analysis (up to you) is where 0 is not reproducible
+and 10 is reproducible. 
+
+As a reminder, if there were only two principles, an example 
+rubric might look like: 
+
+```{r}
+rubric <- data.frame(principle = rep(c("reproducbility", "exhaustive"),2),
+                     weight = rep(c(0.1, 0.9), 2),
+                     score_from_analyst_in_hw3 = c(10, 4, 2, 6), 
+                     score_from_you =c(8, 9, 1, 4))
+rubric
+```
+
+
+```{r}
+## add your code here
+
+```
+
+Describe in words about why you gave the scores 
+that you did. Do you think the analyst fairly 
+evaluated themself? 
+
+#### Add your answer here
+
+
+Are there other principles that you believe should
+have been included and/or removed? 
+
+#### Add your answer here
+
+
+
+# Problem 4
+
+In this problem, you will practice creating 
+data visualizations. 
+
+## Problem 4.1 
+
+Take one plot from HW3, reproduce it here: 
+
+```{r}
+## add your code here
+
+```
+
+Reflect on it and list four ways to improve it: 
+
+#### Add your answer here
+
+
+Next, implement those four changes to improve the plot. 
+
+```{r}
+## add your code here
+
+```
+
+
+
+## Problem 4.2
+
+In this problem, you will practice the data analysis 
+principle of _transparency_. Create one plot (or 
+set of plots) that demonstrates _transparency_. You
+cannot use a plot that was created by the data 
+analyst in HW3 already.  
+
+**Helpful hints**: as a reminder, the meaning of 
+_transparent analyses_ are:  
+
+> _Transparent analyses_ present an element or subset of elements
+summarizing or visualizing data that are influential in 
+explaining how the underlying data phenomena or data-generation 
+process connects to any key output, results, or conclusions. While 
+the totality of an analysis may be complex and involve a long sequence
+of steps, transparent analyses extract one or a few elements from 
+the analysis that summarize or visualize key pieces of evidence
+in the data that explain the most "variation" or are most influential
+to understanding the key results or conclusion. One aspect of being
+transparent is showing the approximate mechanism by which the 
+data inform the results or conclusion.
+
+
+```{r}
+## add your code here
+
+```
+
+Explain why you think this is a transparent plot. 
+
+#### Add your answer here
+
+
+
+
+
+
+
+
+# Problem 5
+ 
+Another way to summarize the key ideas in an analysis is with words. 
+Write the following:  
+
+- a 15 word or less title for a press release
+- a 500 word press release 
+- a headline in 280 characters or less
+
+For this problem, assume the audience is the general public. 
+
+#### Write your press release title here
+
+
+#### Write your press release here
+
+
+#### Write your headline here 
+
+
