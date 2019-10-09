@@ -1,0 +1,203 @@
+---
+title: "Homework 5: Reproducibility and Interactivity"
+output:
+  html_document:
+    highlight: tango
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+#### Preface 
+
+* **This homework is due Wednesday October 16, 2019 at 11:59 PM**. 
+* When you have completed the assignment, knit the R Markdown, commit your changes and push to GitHub.
+* If you do not include axis labels and plot titles, then points will be deducted.
+* If you do not include prose/text after the sections titled "Add a summary of your findings here", then points will be deducted. 
+* You are welcome and encouraged to discuss homework problems with others in order to better understand it, but the work you turn in must be your own. You must write your own code, data analyses, and communicate and explain the results in your own words and with your own visualizations. **All students turning in plagiarized solutions will be reported to Office of Academic Integrity, and will fail the assignment**.
+
+## Motivation 
+
+When performing a data analysis, there are varying degrees that an analysis 
+can be made to be 
+[_reproducible_](https://www.biorxiv.org/content/10.1101/066803v1) 
+(or the ability to take the code and data from a previous publication, rerun 
+the code and get the same results). In contrast _replicability_ is the 
+ability to rerun an experiment and get "consistent" results with the 
+original study using new data. For example, [F1000](https://f1000research.com)
+is a website for you to publish a journal article in a completely reproducible 
+format (integrating the data analysis with the presentation of the results
+in one document), such as using a RMarkdown. In contrast, many publications 
+are not reproducible. For example, in a recent survey, Nature
+[estimated](https://www.nature.com/news/1-500-scientists-lift-the-lid-on-reproducibility-1.19970): 
+
+> "More than 70% of researchers have tried and failed to reproduce 
+another scientist's experiments, and more than half have failed to 
+reproduce their own experiments. Those are some of the telling figures 
+that emerged from Nature's survey of 1,576 researchers who took a brief 
+online questionnaire on reproducibility in research."
+
+However, there might be constraints for why your data analysis is not 
+reproducible. For example, there might be a time constraint for you to 
+get an analysis out quickly. Alternatively, you might work in a profession 
+that is highly protective of IP that does not allow your data analyses 
+to be made publicly available. Neither of these things are necessarily 
+bad, but it can make it harder for someone else to reproduce your work.
+
+There is also a time-investment that usually needs to be made to make your 
+analysis more reproducible. For example, it takes time and effort to document 
+your code and share your code on a public website (e.g. GitHub). However, 
+this enables others to build off your work more easily (i.e. a cost-benefit 
+tradeoff). 
+
+In this homework assignment, you will practice reproducing two data analyses
+from two publications. Our goal for this homework is for you to learn about 
+what types of things can make an analysis more or less reproducible? What 
+information needs to be included in a data analysis to make it reproducible?
+
+## Problem 1
+
+A recent [paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006907)
+was published in a journal called _PLOS Computational Biology_ titled 
+"Ten quick tips for effective dimensionality reduction" (DR). In the
+introduction of the paper they state: 
+
+> "Although many DR techniques have been developed and implemented in 
+standard data analytic pipelines, they are easy to misuse, and their 
+results are often misinterpreted in practice. This article presents a 
+set of useful guidelines for practitioners specifying how to correctly 
+perform DR, interpret its output, and communicate results". 
+
+### Problem 1.1 
+
+Reproduce Figure 2 of this paper. 
+
+```{r}
+## add your code here 
+
+```
+
+
+### Problem 1.2 
+
+Reproduce Figure 5 of this paper. 
+
+```{r}
+## add your code here 
+
+```
+
+### Problem 1.3 
+
+Describe your experience with reproducing the results of this paper. 
+What features enabled it to be more or less reprodubile? Is there something 
+else the author(s) might have done to make it more reproducible? 
+
+#### Add your answer here
+
+
+
+
+## Problem 2
+
+The [Mouse Allergen and Asthma Intervention Trial](https://www.ncbi.nlm.nih.gov/pubmed/28264080) 
+(MAAIT) was a two-arm randomized controlled trial designed to study 
+the efficacy of an intergrated pest management (IPM) program on improving 
+morbidity amongst children with asthma. The IPM program was targeted 
+towards removing mice and so the children enrolled in the trial were all
+allergic to mouse allergen.
+
+The study design called for two treatment arms:
+
+* Control - children and their parents/guardians received education 
+about mouse allergen and management of mice in the home
+
+* Treatment - children and their parents/guardians received education 
+as well as a professionally administered integrated pest management program.
+
+All of the study subjects were followed for a year. On average, the 
+subjects in the treatment group saw improved outcomes relative to the 
+control group, but none of the comparisons reached the level of 
+statistical significance.
+
+#### Paper
+
+You can read the [published study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5632564/) 
+on PubMed Central.
+
+Some summary videos are available from the [study's web site](https://rdpeng.github.io/MAAIT/)
+
+#### Data
+
+* The [data for the published study](https://rdpeng.github.io/MAAIT/maait.csv)
+
+* The codebook in [CSV](https://rdpeng.github.io/MAAIT/codebook.csv) or [Excel](https://rdpeng.github.io/MAAIT/codebook.xlsx) format.
+
+
+### Problem 2.1 
+
+Using the data and the information provided in the published paper, please 
+reproduce the following primary results:
+
+* The effect estimate and confidence interval for the primary outcome (Maximal symptom days/2 wk), as shown in the right-most column of the first result row of the Table 2.
+
+* The effect estimate and confidence interval for the outcome "Slowed activity due to asthma", as shown in the right-most column of the third result row of Table 2.
+
+As part of the analysis you will need to fit a GEE model. You can use the [gee](https://cran.r-project.org/package=gee) package for this purpose.
+
+
+```{r}
+## add your code here 
+
+```
+
+
+### Problem 2.2
+
+There are a number of health outcomes and environmental exposures 
+associated with this study. For this aspect we will focus on 
+
+* Symptom outcomes (`sxs*`), which are coded as the number of days with a given symptom type over the past 14 days.
+
+* Lung function outcomes (`preFEVpp`, `preFEVFVC`)
+
+* Mouse allergen in the child's bed (`dmouseb*`)
+
+* Mouse allergen on the bedroom floor (`dmousef*`)
+
+* Mouse allergen in the air (`airmouse*`)
+
+Build a Shiny app that can be used to graphically explore these variables 
+and their relationships. For example, a plot like the following may be of 
+interest to potential users.
+
+```{r,message=FALSE,warning=FALSE}
+library(tidyverse)
+maait <- read_csv("https://rdpeng.github.io/MAAIT/maait.csv")
+maait %>%
+  ggplot(aes(log(dmouseb), sxsgeneral)) + 
+  geom_point() +
+  geom_smooth(method = "gam", formula = y ~ s(x)) +
+  theme_bw()
+```
+
+Your Shiny app should allow a user to interact with the data and make 
+exploratory plots like the ones above. Specify who your target audience is.
+
+#### Add your answer here
+
+
+
+### Problem 2.3
+
+Describe your experience with reproducing the results of this paper. 
+What features enabled it to be more or less reprodubile? Is there something 
+else the author(s) might have done to make it more reproducible? 
+
+#### Add your answer here
+
+
+

@@ -33,6 +33,11 @@ Homework assignments will be added here throughout the courses.
   * Due: Wednesday October 9, 2019 by 11:59pm
   * Assignment ([HTML](https://jhu-advdatasci.github.io/2019/homeworks/711-hw4-assignment.html), [GitHub](https://github.com/jhu-advdatasci/2019/blob/master/homeworks/711-hw4-assignment.Rmd))
 
+### Homework 5
+
+  * Due: Wednesday October 16, 2019 by 11:59pm
+  * Assignment ([HTML](https://jhu-advdatasci.github.io/2019/homeworks/711-hw5-assignment.html), [GitHub](https://github.com/jhu-advdatasci/2019/blob/master/homeworks/711-hw5-assignment.Rmd))
+
 
 ## 712
 
