@@ -4,3 +4,8 @@
 .Ruserdata
 .DS_Store
 .httr-oauth
+lectures/16-intro-ml_cache/
+lectures/16-intro-ml_files/
+data/axe.ndjson
+data/cloud.ndjson
+
