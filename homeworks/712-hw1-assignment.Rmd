@@ -1,0 +1,78 @@
+---
+title: "Homework 1 (712): Impact of ceasefire weekends on gun homicide rates"
+output:
+  html_document:
+    highlight: tango
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+#### Preface 
+
+* **This homework is due Friday November 8, 2019 at 11:59 PM**. 
+* When you have completed the assignment, knit the R Markdown, commit your changes and push to GitHub.
+* If you do not include axis labels and plot titles, then points will be deducted.
+* You are welcome and encouraged to discuss homework problems with others in order to better understand it, but the work you turn in must be your own. You must write your own code, data analyses, and communicate and explain the results in your own words and with your own visualizations. **All students turning in plagiarized solutions will be reported to Office of Academic Integrity, and will fail the assignment**.
+
+
+# Motivation 
+
+![](https://www.thetrace.org/wp-content/uploads/2017/07/76044401-1280x0-c-default.png)
+[[source](https://www.thetrace.org/wp-content/uploads/2017/07/76044401-1280x0-c-default.png)]
+
+In 2017, Baltimore put out a city-wide call asking for Baltimore residents to avoid having any murders through quarterly Ceasefires and Peace Challenges (February, May, August, and November). 
+This became known as [Baltimore Ceasefire 365](https://baltimoreceasefire.com).
+
+Imagine you are a data scientist working for the city of Baltimore where you help government officials implement and evaluate policies rolled out by looking and analyzing data. 
+Recently, you have been contacted by [Monica Valdes Lupi, the Executive Director from the Boston Public Health Commission](https://www.bphc.org/aboutus/office-director/Pages/office--of-director.aspx) who is interested in exploring the idea of implementing a similar city-wide ceasefire call in Boston to reduce gun deaths. 
+She wants to know 
+
+* Do the Baltimore ceasefires lead to a reduction in gun-related murders? Can you quantify any change in gun-related deaths during ceasefire weekends? 
+
+* Is this a city-wide call you would recommend Boston implement in their own city? Is there any data that would suggest that such a policy would or would not be effective in Boston?
+
+* Is there anything else that should be considered before making any decision about this policy?
+
+In this homework assignment, you will be exploring these questions, summarizing your results, and giving a final recommendation to Monica. 
+
+**Helpful hints**: You will find the [Open Baltimore data](https://data.baltimorecity.gov) useful for obtain crime data on shootings or homicides with a firearm. 
+
+
+# Presentation
+
+You will need present a draft of your analysis in class on **November 6, 2019** using the [slide template provided here](https://docs.google.com/presentation/d/1zB855yWJ27b6VYA0iqFuKPh1REaLYkyh_5D-qQd5bkE/edit?usp=sharing). 
+
+* Everyone has to use the format that the slide template provides, but you do not need to use Google Slides if you don't want to. 
+
+* Each person will have 3 minutes to present with 1 minute for questions.
+
+* Before class on November 6, 2019, please [submit a link to your slides using this form](https://forms.gle/HkVSoh5wQKLqqaHY6).
+
+
+
+
+# Analysis
+
+```{r}
+## add your code here
+
+```
+
+
+
+# Summarize 
+
+Summarize your findings here. 
+
+### Add your response here
+
+# Recommendation
+
+Give Monica your final recommenation. Be sure to point to key pieces of evidence (and any assumptions you made along the way) in your analysis when making your recommendation for or against.
+
+### Add your response here
+
