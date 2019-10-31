@@ -1,0 +1,54 @@
+---
+title: "Homework 2 (712)"
+output:
+  html_document:
+    highlight: tango
+    number_sections: no
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+#### Preface 
+
+* **This homework is due Friday November 22, 2019 at 11:59 PM**. 
+* When you have completed the assignment, knit the R Markdown, commit your changes and push to GitHub.
+* If you do not include axis labels and plot titles, then points will be deducted.
+* You are welcome and encouraged to discuss homework problems with others in order to better understand it, but the work you turn in must be your own. You must write your own code, data analyses, and communicate and explain the results in your own words and with your own visualizations. **All students turning in plagiarized solutions will be reported to Office of Academic Integrity, and will fail the assignment**.
+
+# Instructions
+
+In Homework 2 we will continue our focus on Baltimore but you will need to identify, develop, and answer a question on your own, using data. You will be free to choose a question of your own interest, subject to the following constraints:
+
+* The question you are asking should be Baltimore-related, or specifically relevant to the residents of Baltimore.
+
+* The question should be answerable with data. In other words, there should be an underlying hypothesis that is falsifiable with observed data.
+
+You will need to meet with the course faculty to discuss your proposed question of interest before going ahead and completing the analysis. The primary purpose of this meeting is to ensure that the question being addressed satisfies the requirements and that the scope of your question is appropriate for the timeframe available to do the analysis. Please use the [signup sheet](https://docs.google.com/spreadsheets/d/1K4Kne1KCFFJ-48_3RTwibTCW52S3nvEv1k2UYM7PZ_c/edit?usp=sharing) to setup a meeting.
+
+
+
+
+
+# Question and Motivation
+
+State your question here. Provide any context or other information that may be useful for understanding the significance of your question.
+
+
+# Analysis
+
+
+```{r}
+## add your code here
+
+```
+
+
+
+# Summarize 
+
+Summarize your findings here. 
+
+
