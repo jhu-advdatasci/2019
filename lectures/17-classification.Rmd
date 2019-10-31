@@ -651,7 +651,7 @@ estimates the conditional probability for class $k$
 as the fraction of points in $N_0$ whose response 
 values equal $k$:
 
-$$\mbox{Pr}( Y = k | X =x_0)  = \frac{1}{K} \sum_{i \in N_0} I(y_i = k)$$
+$$\mbox{Pr}( Y = k | \mathbf{X} =\mathbf{x}_0)  = \frac{P(Y = k, \mathbf{X} = \mathbf{x}_0)}{P(\mathbf{X} = \mathbf{x}_0)} = \frac{1}{K} \sum_{i \in N_0} I(y_i = k)$$
 
 Finally, KNN applies Bayes rule and classifies 
 the test observation $x_0$ to the class with the 
