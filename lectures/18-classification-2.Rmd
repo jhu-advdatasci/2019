@@ -754,14 +754,6 @@ treebagfit <- train(arr_delay_status ~ .,
                     trControl = fitControl)
 ```
 
-We can see how are we are doing in our training error with the `confusionMatrix()` function. 
-
-```{r}
-newdata <- as.data.frame(select(train_dat, -arr_delay_status))
-pred_treebag <- predict(treebagfit, newdata)
-confusionMatrix(train_dat$arr_delay_status, pred_treebag)
-```
-
 
 ### Variable Importance Measures
 
@@ -860,13 +852,6 @@ rffit <- train(arr_delay_status ~ .,
                trControl = fitControl)
 ```
 
-We can see how are we are doing in our training error with the `confusionMatrix()` function. 
-
-```{r}
-newdata <- as.data.frame(select(train_dat, -arr_delay_status))
-pred_rf <- predict(rffit, newdata)
-confusionMatrix(train_dat$arr_delay_status, pred_rf)
-```
 
 ```{r}
 # summarize results
@@ -929,14 +914,6 @@ fitControl <- trainControl(method = "cv", number = 5)
 boostfit <- train(arr_delay_status ~ .,
                   method = "gbm", data = train_dat, 
                   trControl = fitControl, verbose = FALSE)
-```
-
-We can see how are we are doing in our training error with the `confusionMatrix()` function. 
-
-```{r}
-newdata <- as.data.frame(select(train_dat, -arr_delay_status))
-pred_boost <- predict(boostfit, newdata)
-confusionMatrix(train_dat$arr_delay_status, pred_boost)
 ```
 
 
