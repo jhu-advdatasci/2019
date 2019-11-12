@@ -830,7 +830,30 @@ So it looks like SVM does give us a bit of a performance
 boost over logistic regression or random forests. 
 
 **Exercise**: What about bagging or boosting? In the next 5 minutes, 
-compare exisiting reuslts to both bagging and boosting (what we learned last week).
+compare exisiting results to both bagging and boosting (what we learned last week).
+
+
+
+```{r}
+fit_treebag <- train(y~., data=train_dat, method="treebag", 
+                metric=metric, trControl=control)
+
+fit_boost <- train(y~., data=train_dat, method="gbm", 
+                metric=metric, trControl=control, verbose = FALSE)
+```
+
+```{r}
+# summarize results
+class_results <- resamples(list(glm=fit_glm, rf=fit_rf, 
+                  fit_svmLinear=fit_svmLinear, fit_svmPoly=fit_svmPoly, 
+                  fit_svmRadial=fit_svmRadial,
+                  fit_treebag = fit_treebag,
+                  fit_boost = fit_boost))
+```
+
+```{r}
+dotplot(class_results)
+```
 
 
 ## Checking test error rate 
