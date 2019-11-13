@@ -29,6 +29,7 @@ Next, we load a few R packages
 library(tidyverse)
 ```
 
+
 # Motivation
 
 You are a data scientist who has been hired by a 
@@ -81,7 +82,8 @@ easily explained by chance?
 
 Let's dig into the data to answer this question. 
 
-# Data import 
+
+# Data import
 
 ```{r}
 verizon <- read_csv("https://sites.google.com/site/chiharahesterberg/data2/Verizon.csv")
@@ -93,13 +95,27 @@ verizon <- verizon %>%
   rename(time=Time, group=Group)
 
 verizon
-table(verizon$group)
 ```
 
 
 # Exploratory data analysis
 
-First, let's calculate what the difference is
+Let's start by having a look at the data.
+
+```{r}
+dim(verizon)
+table(verizon$group)
+
+hist(verizon$time)
+
+par(mfrow = c(1, 2))
+hist(verizon$time[verizon$group == "ILEC"], main = "ILEC", xlab = "time")
+hist(verizon$time[verizon$group == "CLEC"], main = "CLEC", xlab = "time")
+
+boxplot(time ~ group, data = verizon)
+```
+
+Next, we calculate what the difference is
 between the mean repair time of ILEC and CLEC customers. 
 
 ```{r}
@@ -115,6 +131,32 @@ observed_repair <- mean_repair %>%
   summarize(diff_repair_time = ILEC - CLEC) %>%
   .$diff_repair_time
 observed_repair 
+```
+
+**Reminder: `dplyr`**
+
+Quick reminder on how `dplyr` functions work.
+
+```{r}
+# Run each line of the code above to see how the dplyr functions work
+# e.g. group_by and summarize
+verizon %>% 
+  group_by(group) %>% 
+  summarize(mean_repair_time = mean(time))
+
+# e.g. spread
+mean_repair %>% 
+  spread(key=group,value=mean_repair_time)
+```
+
+**Continued**
+
+Continuing from above.
+
+```{r}
+observed_repair
+mean_repair
+table(verizon$group)
 ```
 
 We see the repair time is longer for the CLEC group, but 
@@ -135,7 +177,8 @@ small, all we can say is that the data available does
 not provide convincing enough evidence that there 
 is a true difference.
 
-## Hypothesis testing
+
+# Hypothesis testing
 
 This is the core idea of _statistical significance_
 or classical _hypothesis testing_ to calculate how often
@@ -143,13 +186,21 @@ pure random chance would give an effect as large as the
 one observed in the data in the absence of any real 
 effect. 
 
-In our verizon example, let's denote $\mu_1$ as the 
+In our Verizon example, let's denote $\mu_1$ as the 
 mean repair time for ILEC customers and $\mu_2$ as 
 the mean repair time for CLEC customers. We can test 
 
 $$ H_0: \mu_1 = \mu_2$$ 
 versus 
 $$ H_1: \mu_1 < \mu_2$$
+
+i.e. the mean repair time for ILEC customers is less than 
+for CLEC customers under the alternative hypothesis, which 
+would mean that Verizon is providing worse service to CLEC customers. 
+(Note that in general, we prefer two-sided tests unless there is 
+a strong reason to prefer one-sided. Here, we have chosen a one-sided 
+test because the specific question we are interested in is whether 
+ILEC repair times are less than CLEC repair times.)
 
 In hypothesis testing, the idea is that we want 
 to compare the test statistic (observed difference in mean
@@ -191,6 +242,7 @@ verizon %>%
   geom_histogram() + 
   facet_wrap(~group, scales = "free_y")
 ```
+
 ```{r}
 par(mfrow = c(1, 2))
 qqnorm(verizon[verizon$group=="ILEC",]$time)
@@ -200,6 +252,10 @@ qqnorm(verizon[verizon$group=="CLEC",]$time)
 qqline(verizon[verizon$group=="CLEC",]$time)
 ```
 
+The histograms and QQ-plots show that the samples 
+are strongly skewed. For more details on QQ-plots, see 
+chapter 2 of the textbook by Chihara and Hesterberg.
+
 ```{r}
 table(verizon$group)
 ```
@@ -207,7 +263,8 @@ table(verizon$group)
 So, let's try to explore a different way to calculate 
 a $p$-value that doesn't depend on a theoretical distribution.
 
-# Permutation testing 
+
+# Permutation testing
 
 _Permutation testing_ compares the test statistic to a
 reference distribution using permutations of the data. 
@@ -236,12 +293,12 @@ a permutation test:
 Let's try implementing a permutation test. 
 
 ```{r}
-N <- 10^4 -1 # set number of times to repeat this process
-set.seed(99) # so we all get the same answer
+N <- 10^4 - 1  # set number of times to repeat this process
+set.seed(99)   # so we all get the same answer
 
-result <- numeric(N) # space to save the random differences
+result <- numeric(N)  # space to save the random differences
 for(i in 1:N) {
-  index <- sample(1687, size = 1664, replace = FALSE) # sample of numbers from 1:1687
+  index <- sample(1687, size = 1664, replace = FALSE)  # sample of numbers from 1:1687
   result[i] <- mean(verizon$time[index]) - mean(verizon$time[-index])
 }
 head(result)
@@ -249,10 +306,15 @@ head(result)
 
 ```{r}
 par(mfrow = c(1, 1))
-hist(result, xlab = "xbar1 - xbar2",
-      main = "Permutation distribution for verizon repair times")
+hist(result, xlab = "xbar1 - xbar2", 
+     main = "Permutation distribution for Verizon repair times")
 abline(v = observed_repair, col = "blue", lty = 5)
 ```
+
+We can see that the observed difference in repair times 
+(blue dotted line) is quite extreme, although there are some 
+permutation values that are even lower. How strong is this 
+evidence?
 
 We can calculate the proportion of times that 
 we see simulated differences as extreme or smaller 
@@ -267,8 +329,8 @@ Interesting. The $p$-value calculated from permutation testing
 indicates that the observed difference in means is not 
 significant at the 1% level (though it is at the 5% level). 
 
-In the above simulation, we used $10^4 -1$ resamples for speed, but 
-for more accuracy, we should use more resamples (e.g. half-million 
+In the above simulation, we used $10^4 - 1$ resamples for speed, but 
+for more accuracy, we should use more resamples (e.g. half a million 
 resamples). The goal is to have only a very small chance of a test 
 wrongly being declared significant or not, due to random sampling. 
 
@@ -287,20 +349,18 @@ which are not sensitive to outliers (like the mean is)
 questions, such as comparing the difference in variances
 
 
-
-
-# The Bootstrap
+# The bootstrap
 
 In the leadup to elections, pollsters frequently conduct 
 polls to see how voters feel about particular issues. 
 
 For example, what proportion $p$ of registered voters plan to 
 support the Republicans in races for Congress? This is 
-also known as the Generic Congressional Vote. Here 
+also known as the Generic Congressional Vote. Here, 
 we will use data from the 2018 Generic Congressional Vote. 
 If we pick a particular pollster, e.g. 
 NPR/PBS NewsHour/Marist, we see 
-[they released the results of a poll](http://maristpoll.marist.edu/wp-content/uploads/2018/10/NPR_PBS-NewsHour_Marist-Poll_USA-NOS-and-Tables_1810021305.pdf#page=3) on Oct 1, 2018 for the 2018 Generic Congressional Vote 
+[they released the results of a poll](http://maristpoll.marist.edu/wp-content/uploads/2018/10/NPR_PBS-NewsHour_Marist-Poll_USA-NOS-and-Tables_1810021305.pdf#page=12) on Oct 1, 2018 for the 2018 Generic Congressional Vote 
 reporting $\hat{p} = 0.42$ and Democrats at 
 $1-\hat{p} = 0.48$. 
 
@@ -317,6 +377,7 @@ we are interested in doing something similar: we want to know
 how a statistic varies due to random sampling. But first, we 
 need to define a _sampling distribution_. 
 
+
 ## Sampling distribution
 
 In the above scenario, we know there are other pollsters
@@ -329,15 +390,23 @@ all conduct surveys asking about the 2018 generic congressional
 ballot, we could see a distribution of the $\hat{p}$ from the 
 recorded values from the various pollsters. 
 
+
 ### Case study 1
+
 For example, let's assume
-the true proportion ($p$) is $p=0.47$. This is a distribution of $\hat{p}$ 
-after 85 pollsters all conducted surveys of sample sizes $n=1000$. 
+the true proportion ($p$) is $p=0.47$. The following code simulates a 
+distribution of $\hat{p}$ after 85 pollsters all conducted surveys of 
+sample sizes $n=1000$. 
 
 ```{r}
+# number of pollsters
 B <- 85
+# sample size for each poll
 n <- 1000
+# true proportion
 p <- 0.47
+
+# simulated distribution
 phat <- replicate(B, {
   X <- sample(c(0, 1), size = n, replace = TRUE, prob = c(1 - p, p))
   mean(X)
@@ -388,6 +457,7 @@ $\sqrt{0.47(1-0.47)/1000}$ = `r sqrt((0.47)*(1-0.47) / 1000)`
 which matches very closely to the observed 
 standard error `r sd(phat)`. 
 
+
 ### Case study 2
 
 Let's look at the sampling distribution for a different 
@@ -401,9 +471,8 @@ size 12 from the uniform distribution.
 
 ```{r}
 maxY <- numeric(1000)
-set.seed(100)
 for (i in 1:1000) {
-  y <- runif(12)     # draw random sample of size 12
+  y <- runif(12)     # draw random sample of size 12 from uniform distribution
   maxY[i] <- max(y)  # find max, save in position i
 }
 
@@ -420,8 +489,63 @@ mean(maxY)
 sd(maxY)
 ```
 
-I leave it up you to to compare this to the theoretical 
-mean and standard error. 
+
+## Case study 3
+
+Australia held a federal election on 18 May 2019. In the Australian 
+political system, there are two main political parties -- the Australian 
+Labor Party (center-left) and the Liberal-National coalition (center-right). 
+Most elections are won by one of these two blocks.
+
+In the [2019 election](https://en.wikipedia.org/wiki/2019_Australian_federal_election), 
+most opinion polls expected a Labor victory, however in the end there 
+was an upset victory by the Liberal-National coalition.
+
+What can we learn from the opinion polls?
+
+The [Wikipedia page for the opinion polls](https://en.wikipedia.org/wiki/Opinion_polling_for_the_2019_Australian_federal_election) 
+shows that the final major opinion poll was by Newspoll on 15-16 May 2019. 
+This opinion poll reported voting intention proportions of 48.5% for the 
+Liberal-National coalition and 51.5% for the Australian Labor Party 
+(in two-party preferred terms under Australia's preferential or ranked choice 
+voting system).
+
+Let's simulate some data as previously, assuming the true proportion 
+is $p=0.485$ (more on this later).
+
+```{r}
+B <- 85
+n <- 1000
+p <- 0.485
+
+phat <- replicate(B, {
+  X <- sample(c(0, 1), size = n, replace = TRUE, prob = c(1 - p, p))
+  mean(X)
+})
+
+par(mfrow = c(1, 1))
+hist(phat, main = "Distribution of p-hat")
+abline(v = p, col = "blue", lty = 5)
+abline(v = 0.50, col = "red", lty = 5)
+```
+
+What does this tell us?
+
+This is the sampling distribution of our statistic $\hat{p}$, assuming 
+a true $p$ of 0.485. Assuming a true $p$ of 0.485, we can then calculate 
+the expected proportion of observed $\hat{p}$ above 0.5, given our 
+assumptions (e.g. sample sizes).
+
+But what if we don't know the true value $p$? This is the more common 
+situation in practice.
+
+For an election, we are also more interested in the final voting result 
+on the day of the election, instead of the voting intention on the 
+day of the opinion poll. But the voting intention on the day of the 
+opinion poll is all that we have access to. In statistical inferenxce, 
+it is crucial to think about what exactly is the population you are 
+sampling from.
+
 
 ## Back to the bootstrap
 
@@ -437,7 +561,7 @@ statistic to understand how much variability or
 uncertainity there is. 
 
 For the Verizon repair example, we know the sample mean 
-for the difference in repair times is `r observed_repair`
+for the difference in repair times is `r round(observed_repair, 3)`
 using a sample size of `r nrow(verizon)`. 
 
 If you recall, we are interested in the difference
@@ -458,7 +582,7 @@ $$ H_1: \mu_1 < \mu_2$$
 We already mentioned that different numbers of samples of 
 the same size will lead to different sample means. The 
 question is how can we gauge the accuracy of 
-`r observed_repair` as an estimate to $\mu_1 - \mu_2$. 
+`r round(observed_repair, 3)` as an estimate to $\mu_1 - \mu_2$. 
 
 If we knew the sampling distribution of the difference in 
 means for samples of size 1000 from the population of all 
@@ -497,7 +621,7 @@ will be the same as the mean of the original sample
 (not necessarily that of the original population). 
 
 
-### Steps to construct the bootstrap distribution 
+### Steps to construct the bootstrap distribution
 
 1. Start with a sample of size $n$ from a population
 2. Draw a resample of size $n$ with replacement from the sample
@@ -526,7 +650,7 @@ n_clec <- length(time_clec)
 
 B <- 10^4
 set.seed(123)
-time_ilec_boot = time_clec_boot = time_diff_boot <- numeric(N)
+time_ilec_boot <- time_clec_boot <- time_diff_boot <- numeric(N)
 for (i in 1:B) {
   sample_ilec <- sample(time_ilec, n_ilec, replace = TRUE)
   sample_clec <- sample(time_clec, n_clec, replace = TRUE)
@@ -539,10 +663,11 @@ for (i in 1:B) {
 Next, we plot the bootstrap distributions. 
 
 ```{r, fig.height=6}
-
 par(mfrow=c(3,2))
+
 #bootstrap for ILEC
-hist(time_ilec_boot, main = "Bootstrap distribution of ILEC means",
+hist(time_ilec_boot, 
+     main = "Bootstrap distribution of ILEC means",
      xlab = "means")
 abline(v = mean(time_ilec), col = "blue")
 abline(v = mean(time_ilec_boot), col = "red", lty = 2)
@@ -551,7 +676,8 @@ qqnorm(time_ilec_boot)
 qqline(time_ilec_boot)
 
 #bootstrap for CLEC
-hist(time_clec_boot, main = "Bootstrap distribution of CLEC means", 
+hist(time_clec_boot, 
+     main = "Bootstrap distribution of CLEC means", 
      xlab = "means")
 abline(v = mean(time_clec), col = "blue")
 abline(v = mean(time_clec_boot), col = "red", lty = 2)
@@ -560,7 +686,8 @@ qqnorm(time_clec_boot)
 qqline(time_clec_boot)
 
 #Difference in means
-hist(time_diff_boot, main = "Bootstrap distribution of difference in means")
+hist(time_diff_boot, 
+     main = "Bootstrap distribution of difference in means")
 abline(v = observed_repair, col = "blue")
 abline(v = mean(time_diff_boot), col = "red", lty = 2)
 
@@ -585,7 +712,7 @@ _bootstrap percentile confidence interval_ for the
 corresponding parameter.  
 
 **We can then say that we are 95% confident that the 
-true statistic lies within this interval**
+true statistic lies within this interval.**
 
 In our example, we can extract the 2.5 and 97.5 
 percentiles using the `quantile()` function: 
@@ -603,8 +730,56 @@ hours shorter than the repair times for CLEC
 customers. 
 
 
-## Relationship between the bootstrap and Monte Carlo simulations
+### Other statistics
 
+We can also use the bootstrap to investigate uncertainty for 
+other statistics, such as the median, trimmed mean, ratios, 
+proportion of extreme values, etc.
+
+This is a major advantage of the bootstrap -- we can estimates 
+uncertainty for statistics that would be difficult to calculate using 
+other methods. This allows us to focus on the most meaningful estimators 
+for the situation at hand, instead of choosing estimators based on 
+mathematical convenience (e.g. the mean).
+
+Below, we calculate a bootstrap confidence interval for the 
+difference in trimmed means.
+
+```{r}
+observed_repair_trim <- mean(time_ilec, trim = 0.25) - mean(time_clec, trim = 0.25)
+observed_repair_trim
+
+B <- 10^4
+set.seed(123)
+time_ilec_boot <- time_clec_boot <- time_diff_boot <- numeric(N)
+for (i in 1:B) {
+  sample_ilec <- sample(time_ilec, n_ilec, replace = TRUE)
+  sample_clec <- sample(time_clec, n_clec, replace = TRUE)
+  time_ilec_boot[i] <- mean(sample_ilec, trim = 0.25)
+  time_clec_boot[i] <- mean(sample_clec, trim = 0.25)
+  time_diff_boot[i] <- mean(sample_ilec, trim = 0.25) - mean(sample_clec, trim = 0.25)
+}
+
+#Difference in trimmed means
+par(mfrow = c(1, 2))
+hist(time_diff_boot, 
+     main = "Bootstrap distribution of\ndifference in trimmed means")
+abline(v = observed_repair_trim, col = "blue")
+abline(v = mean(time_diff_boot), col = "red", lty = 2)
+
+qqnorm(time_diff_boot)
+qqline(time_diff_boot)
+```
+
+Calculate the bootstrap confidence interval.
+
+```{r}
+mean(time_diff_boot)
+quantile(time_diff_boot, c(0.025, 0.975))
+```
+
+
+## Relationship between the bootstrap and Monte Carlo simulations
 
 The bootstrap is an example of a more generalized idea called
 _Monte Carlo_ methods or simulations. Here the idea is the bootstrap 
@@ -620,7 +795,7 @@ to similarly estimate the uncertainty of a test statistic.
 For example, our example of simulating poll data from pollsters 
 (Case Study 1 under Sampling distribution) was an example of a 
 Monte Carlo simulation. We assumed the true proportion of Republican 
-voters ($p$) was $p=0.47$ and then wanted estimate the uncertainty 
+voters ($p$) was $p=0.47$ and then wanted to estimate the uncertainty 
 of $\hat{p}$ after 85 pollsters all conducted surveys of 
 sample sizes $n=1000$. 
 
@@ -636,3 +811,48 @@ phat <- replicate(B, {
 par(mfrow = c(1, 1))
 hist(phat, main = "Distribution of p-hat from 85 pollsters\nconducting surveys of size 1000")
 ```
+
+
+## Sources of variation in a bootstrap distribution
+
+How accurate is the bootstrap? We conclude with a note on sources of 
+variation in a bootstrap distribution.
+
+Bootstrap distributions and conclusions based on them include two 
+sources of random variation:
+
+- Variation due to sampling the original sample from the population
+- Variation due to bootstrap resamples chosen from the original sample
+
+If we increase the number of bootstrap samples, we can reduce the 
+second source of variation, but not the first.
+
+To reduce the first source of variation, we would need a larger 
+sample size in the original experiment. Since we can easily reduce 
+the second source of variation, most of the variation in bootstrap 
+distributions usually comes from the first source. Bootstrapping 
+does not overcome the weakness of small sample sizes in the original 
+sample.
+
+In general, around 10,000 bootstrap resamples will give good estimates. 
+More resamples are recommended if accuracy is very important.
+
+
+# Additional references
+
+- [Mathematical Statistics with Resampling and R](https://sites.google.com/site/chiharahesterberg/home) 
+textbook by Laura Chihara and Tim Hesterberg. This is the main reference 
+we have used for this lecture, in particular Chapters 1 to 5. This textbook 
+provides an excellent overview of mathematical statistics based around 
+the idea of modern resampling techniques, along with numerous examples in R.
+
+- [Statistical Thinking for the 21st Century](http://statsthinking21.org/) 
+online textbook by Russell A. Poldrack. See Chapter 8 on "Resampling and simulation". 
+This textbook is another great introductory reference on modern statistics 
+(available free online).
+
+- [Computer Age Statistical Inference](http://web.stanford.edu/~hastie/CASI/index.html) 
+textbook by Bradley Efron and Trevor Hastie. See Chapters 10 and 11. 
+This is a more advanced textbook (PDF available free online).
+
+
