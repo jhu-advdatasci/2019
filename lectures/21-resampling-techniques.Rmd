@@ -1,5 +1,6 @@
 ---
 title: Resampling Techniques for Statistics and Data Science
+author: Stephanie Hicks, Lukas Weber
 date: Nov 13, 2019
 output: 
     html_document:
@@ -505,7 +506,7 @@ What can we learn from the opinion polls?
 
 The [Wikipedia page for the opinion polls](https://en.wikipedia.org/wiki/Opinion_polling_for_the_2019_Australian_federal_election) 
 shows that the final major opinion poll was by Newspoll on 15-16 May 2019. 
-This opinion poll reported voting intention proportions of 48.5% for the 
+This opinion poll reported a voting intention proportion of 48.5% for the 
 Liberal-National coalition and 51.5% for the Australian Labor Party 
 (in two-party preferred terms under Australia's preferential or ranked choice 
 voting system).
@@ -526,25 +527,30 @@ phat <- replicate(B, {
 par(mfrow = c(1, 1))
 hist(phat, main = "Distribution of p-hat")
 abline(v = p, col = "blue", lty = 5)
-abline(v = 0.50, col = "red", lty = 5)
+abline(v = 0.50, col = "cyan", lty = 5)
 ```
 
 What does this tell us?
 
-This is the sampling distribution of our statistic $\hat{p}$, assuming 
-a true $p$ of 0.485. Assuming a true $p$ of 0.485, we can then calculate 
-the expected proportion of observed $\hat{p}$ above 0.5, given our 
-assumptions (e.g. sample sizes).
+This is the (approximate) sampling distribution of our statistic 
+$\hat{p}$, assuming a true $p$ of 0.485. We can then investigate the 
+spread of the sampling distribution, and the proportion of simulated 
+values above 0.5, given our assumptions (values of $p$, sample 
+sizes, etc).
 
 But what if we don't know the true value $p$? This is the more common 
 situation in practice.
 
-For an election, we are also more interested in the final voting result 
+Finally, for an election, we are more interested in the final voting result 
 on the day of the election, instead of the voting intention on the 
 day of the opinion poll. But the voting intention on the day of the 
-opinion poll is all that we have access to. In statistical inferenxce, 
-it is crucial to think about what exactly is the population you are 
-sampling from.
+opinion poll is all that we have access to. If people change their minds 
+over the following days, this is not captured by our model or our sample 
+of data. When we interpret our results, we need to keep in mind the 
+population that our sample has been drawn from.
+
+In statistical inference, it is crucial to think clearly about the 
+population that we are sampling from.
 
 
 ## Back to the bootstrap
@@ -650,7 +656,7 @@ n_clec <- length(time_clec)
 
 B <- 10^4
 set.seed(123)
-time_ilec_boot <- time_clec_boot <- time_diff_boot <- numeric(N)
+time_ilec_boot <- time_clec_boot <- time_diff_boot <- numeric(B)
 for (i in 1:B) {
   sample_ilec <- sample(time_ilec, n_ilec, replace = TRUE)
   sample_clec <- sample(time_clec, n_clec, replace = TRUE)
@@ -736,14 +742,14 @@ We can also use the bootstrap to investigate uncertainty for
 other statistics, such as the median, trimmed mean, ratios, 
 proportion of extreme values, etc.
 
-This is a major advantage of the bootstrap -- we can estimates 
+This is a major advantage of the bootstrap -- we can estimate 
 uncertainty for statistics that would be difficult to calculate using 
 other methods. This allows us to focus on the most meaningful estimators 
 for the situation at hand, instead of choosing estimators based on 
 mathematical convenience (e.g. the mean).
 
 Below, we calculate a bootstrap confidence interval for the 
-difference in trimmed means.
+**difference in trimmed means**.
 
 ```{r}
 observed_repair_trim <- mean(time_ilec, trim = 0.25) - mean(time_clec, trim = 0.25)
@@ -751,12 +757,10 @@ observed_repair_trim
 
 B <- 10^4
 set.seed(123)
-time_ilec_boot <- time_clec_boot <- time_diff_boot <- numeric(N)
+time_diff_boot <- numeric(B)
 for (i in 1:B) {
   sample_ilec <- sample(time_ilec, n_ilec, replace = TRUE)
   sample_clec <- sample(time_clec, n_clec, replace = TRUE)
-  time_ilec_boot[i] <- mean(sample_ilec, trim = 0.25)
-  time_clec_boot[i] <- mean(sample_clec, trim = 0.25)
   time_diff_boot[i] <- mean(sample_ilec, trim = 0.25) - mean(sample_clec, trim = 0.25)
 }
 
@@ -776,6 +780,40 @@ Calculate the bootstrap confidence interval.
 ```{r}
 mean(time_diff_boot)
 quantile(time_diff_boot, c(0.025, 0.975))
+```
+
+Similarly, we can calculate a bootstrap confidence interval for 
+the **ratio of means**.
+
+```{r}
+observed_repair_ratio <- mean(time_ilec) / mean(time_clec)
+observed_repair_ratio
+
+B <- 10^4
+set.seed(123)
+time_ratio_boot <- numeric(B)
+for (i in 1:B) {
+  sample_ilec <- sample(time_ilec, n_ilec, replace = TRUE)
+  sample_clec <- sample(time_clec, n_clec, replace = TRUE)
+  time_ratio_boot[i] <- mean(sample_ilec) / mean(sample_clec)
+}
+
+#Ratio of means
+par(mfrow = c(1, 2))
+hist(time_ratio_boot, 
+     main = "Bootstrap distribution of\nratio of means")
+abline(v = observed_repair_ratio, col = "blue")
+abline(v = mean(time_ratio_boot), col = "red", lty = 2)
+
+qqnorm(time_ratio_boot)
+qqline(time_ratio_boot)
+```
+
+Calculate the bootstrap confidence interval.
+
+```{r}
+mean(time_ratio_boot)
+quantile(time_ratio_boot, c(0.025, 0.975))
 ```
 
 
