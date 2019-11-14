@@ -130,7 +130,7 @@ mean_repair
 observed_repair <- mean_repair %>% 
   spread(key=group,value=mean_repair_time) %>% 
   summarize(diff_repair_time = ILEC - CLEC) %>%
-  .$diff_repair_time
+  pull(diff_repair_time)
 observed_repair 
 ```
 
@@ -362,8 +362,7 @@ we will use data from the 2018 Generic Congressional Vote.
 If we pick a particular pollster, e.g. 
 NPR/PBS NewsHour/Marist, we see 
 [they released the results of a poll](http://maristpoll.marist.edu/wp-content/uploads/2018/10/NPR_PBS-NewsHour_Marist-Poll_USA-NOS-and-Tables_1810021305.pdf#page=12) on Oct 1, 2018 for the 2018 Generic Congressional Vote 
-reporting $\hat{p} = 0.42$ and Democrats at 
-$1-\hat{p} = 0.48$. 
+reporting $\hat{p} = 0.42$. 
 
 This was one random sample of $n=996$ registered voters. 
 However a different random sample might have yielded 
@@ -395,9 +394,10 @@ recorded values from the various pollsters.
 ### Case study 1
 
 For example, let's assume
-the true proportion ($p$) is $p=0.47$. The following code simulates a 
-distribution of $\hat{p}$ after 85 pollsters all conducted surveys of 
-sample sizes $n=1000$. 
+the true proportion of people who vote for the republican 
+candidate ($p$) is $p=0.47$. The following code simulates a 
+distribution of $\hat{p}$ after 85 pollsters all conducted
+surveys of sample sizes $n=1000$. 
 
 ```{r}
 # number of pollsters
@@ -429,7 +429,6 @@ or more exactly:
 mean(phat)
 sd(phat)
 ```
-
 
 The permutation distributions above are sampling 
 distributions, as is the example above. The most 
@@ -491,7 +490,7 @@ sd(maxY)
 ```
 
 
-## Case study 3
+### Case study 3
 
 Australia held a federal election on 18 May 2019. In the Australian 
 political system, there are two main political parties -- the Australian 
