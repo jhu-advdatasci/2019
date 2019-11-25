@@ -256,7 +256,7 @@ defined with (X,Y) coordiante points on a Cartesian
 plane. 
 
 ```{r, echo=FALSE}
-knitr::include_graphics("https://github.com/jtleek/advdatasci/raw/master/imgs/unsupervised/distance.png")
+knitr::include_graphics("img/distance.png")
 ```
 
 [[image source](http://rafalab.jhsph.edu/688/lec/lecture5-clustering.pdf)]
@@ -270,7 +270,7 @@ $$\sqrt{ (X_1-X_2)^2 + (Y_1-Y_2)^2} = (|X_1-X_2|^{2} + |Y_1-Y_2|^{2})^{1/2}$$
 or 
 
 ```{r, echo=FALSE}
-knitr::include_graphics("https://github.com/jtleek/advdatasci/raw/master/imgs/unsupervised/euclid.png")
+knitr::include_graphics("img/euclid.png")
 ```
 
 We have previously learned how to use the 
@@ -313,7 +313,7 @@ of 12. In Euclidean geometry, the green line has length
 $6\sqrt{2} \approx 8.49$, and is the unique shortest path.
 
 ```{r, echo=FALSE}
-knitr::include_graphics("https://github.com/jtleek/advdatasci/raw/master/imgs/unsupervised/manhattan.png")
+knitr::include_graphics("img/manhattan.png")
 ```
 
 [[image source](http://en.wikipedia.org/wiki/Taxicab_geometry)]
