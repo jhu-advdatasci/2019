@@ -1,0 +1,530 @@
+---
+title: Strategies for dealing with big data in R
+date: Nov 24, 2019
+output: 
+    html_document:
+        theme: cosmo 
+        toc: true
+        toc_float: true
+        highlight: tango
+        number_sections: false
+fig_width: 5
+fig_height: 5
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      fig.align = "center", 
+                      out.width = '70%')
+```
+
+First, we load a few R packages
+```{r, message=FALSE, warning=FALSE}
+suppressPackageStartupMessages({
+  library(here)
+  library(dbplyr)
+  library(rhdf5)
+  library(pryr)
+  library(tidyverse)
+  library(rsample)
+})
+```
+
+The lecture material came from these resources: 
+
+- [A great blog post by Alex Gold from RStudio](https://rviews.rstudio.com/2019/07/17/3-big-data-strategies-for-r/)
+
+
+# Introduction 
+
+For most data analyses in R, data you encounter can easily
+be read into memory in R (either locally or on a cluster 
+of sorts) and analyzed in a standard way. However, if you 
+do encounter data that is too big to be read into memory, 
+you might start to search for strategies on how to deal 
+with this data. For most of people, it might be obvious
+_why_ you would want to use R with big data, but it
+not obvious _how_. 
+
+Now, you might say advances in hardware make this less 
+and less of a problem as most laptops come with >4-8Gb 
+of memory and it's easy to get instances on cloud providers 
+with terabytes of RAM (as we saw in the last lecture). 
+That's definitely true. But there might be some problems
+that you will run into. 
+
+1. Let's say you are able load the data into the RAM on your
+machine (in-memory). You have to keep in mind that you will 
+need to do something with the data too (typically need 2-3
+times the RAM of the size of your data. This may or may 
+not be a problem for your hardware that you are working with. 
+
+If you had something like a zipped `.csv` file, you could always 
+try loading just the first few lines into memory to see what is 
+inside the files, but eventually you will likely need a 
+different strategy. 
+
+```{r, message=FALSE}
+read_csv(readr_example("mtcars.csv.bz2"), 
+         skip = 0, n_max = 10, progress = show_progress())
+```
+
+2. Transfer speeds can be slow. If you are working with 
+data on a server that needs to be transferred somewhere to do 
+the processing or computation once the data has been transferred.
+For example, the time it takes to make a call over the internet 
+from San Francisco to New York City takes over 4 times longer 
+than reading from a standard hard drive and over 
+[200 times longer than reading from a solid state hard drive](https://blog.codinghorror.com/the-infinite-space-between-words/)
+. This is an especially big problem early in developing a 
+model or analytical project, when data might have to be pulled repeatedly.
+
+```{r, echo=FALSE}
+knitr::include_graphics("https://blog.codinghorror.com/content/images/2014/May/internet-latency-usa.png")
+```
+
+[[image source](https://blog.codinghorror.com/content/images/2014/May/internet-latency-usa.png)]
+
+Today we are going to discuss some stratgies (and R 
+packages) for working with big data in R. We will also 
+go through some examples of how to execute these strategies 
+in R. 
+
+# Motivation
+
+## Data 
+
+We will use the [`nycflights13`](https://github.com/hadley/nycflights13) 
+data that we learned about in our 
+[trees, bagging and boosting lecture](https://jhu-advdatasci.github.io/2019/lectures/18-classification-2.html).
+
+If you recall:
+
+> "This package contains information about all flights that departed from NYC (e.g. EWR, JFK and LGA) to destinations in the United States, Puerto Rico, and the American Virgin Islands) in 2013: 336,776 flights in total. To help understand what causes delays, it also includes a number of other useful datasets."
+
+This package provides the following data tables.
+
+- `flights`: all flights that departed from NYC in 2013
+- `weather`: hourly meterological data for each airport
+- `planes`: construction information about each plane
+- `airports`: airport names and locations
+- `airlines`: translation between two letter carrier codes and names
+
+However, this time we will cache the data from the `nycflights13` 
+package in a form we are already familiar with (SQLite databases). 
+But there are many other data formats that you might encounter including: 
+
+- `.csv` (comma separated values). Good for storing rectangular data. However, can really slow to read and write, making them (often) unusable for large datasets. 
+- `.json` (JavaScript object notation). Key-value pairs in a partially structured format
+- `.parquet` (Apache Parquet). Developed by Cloudera and Twitter to serve as a column-based storage format, optimized for work with multi-column datasets. Can be used for [Spark data](http://spark.apache.org) or other tools in the Hadoop ecosystem. When you store data in parquet format, you actually get a whole directory worth of files. The data is split across multiple `.parquet` files, allowing it to be easily stored on multiple machines, and there are some metadata files too, describing the contents of each column. Can use [`sparklyr`](https://spark.rstudio.com) to import `.parquet` files
+- `.avro` (Apache Avro). Released by the Hadoop working group in 2009. It is a row-based format that is highly splittable. It is also described as a data serialization system similar to Java Serialization. The schema is stored in JSON format, while the data is stored in binary format, minimizing file size and maximizing efficiency. Can use [`sparkavro`](https://cran.r-project.org/web/packages/sparkavro/index.html) to import `.avro` files. 
+- `.zarr`. [Zarr files](https://zarr.readthedocs.io/en/stable/) are a modern library and data format for storing chunked, compressed N-dimensional data. Still very much in development though. 
+- `.h5` (Hierarchical Data Format or HDF5). Mature (20 years old) library and data format which is also designed to handle chunked compressed N-dimensional data. Can use [`rhdf5`](https://www.bioconductor.org/packages/rhdf5) to read and write `.h5` files.
+
+OK so as mentioned above, let's use the SQLite format to demonstrate the 
+strategies for dealing with large data. However, they can easily transfer 
+other data formats. 
+
+**Reminder**: There are several ways to 
+[query](https://db.rstudio.com/getting-started/database-queries/)
+`SQL` or `SQLite` databases in R. 
+
+Ok, we will set up the SQLite database using the 
+`nycflights13_sqlite()` function in the `dbplyr` package. 
+
+```{r}
+library(nycflights13)
+if(!file.exists(here("data", "nycflights13", "nycflights13.sqlite"))){
+  dir.create(here("data", "nycflights13"))
+  dbplyr::nycflights13_sqlite(path=here("data", "nycflights13"))
+}
+
+# check to see what file has been created
+list.files(here("data", "nycflights13"))
+```
+
+We can use the `DBI::dbConnect()` function with 
+`RSQLite::SQLite()` backend to connect to the 
+`SQLite` database (if you want a refresher on this, check out the 
+[Getting Data](https://jhu-advdatasci.github.io/2019/lectures/04-gettingdata-api.html#reading_in_from_sqlite_database) lecture).
+
+```{r}
+library(DBI)
+conn <- DBI::dbConnect(RSQLite::SQLite(), 
+                       here("data", "nycflights13", "nycflights13.sqlite"))
+conn
+```
+
+We can query the database with the `dplyr::tbl()` function
+that returns something that feels like a dataframe.
+```{r}
+tbl(conn, "flights") %>%
+  head(n=10)
+```
+
+```{r}
+df <- dplyr::tbl(conn, "flights")
+df %>% 
+  tally()
+```
+
+Even though it only has a few hundred thousand rows, it is still 
+useful to demonstrate some strategies for dealing with big data 
+in R. 
+
+# Sample and Model 
+
+The first strategy is to downsample your data to a size that can 
+be downloaded (or if already downloaded, just loaded into memory) 
+and perform your analysis on the downsampled data. This also allows 
+models and methods to be run in a reasonable amount of time. 
+
+**Note**: If maintaining class balance is necessary (or one class
+needs to be over/under-sampled), it's reasonably simple 
+stratify the data set during sampling.
+
+```{r, echo=FALSE}
+knitr::include_graphics("https://rviews.rstudio.com/post/2019-07-01-3-big-data-paradigms-for-r_files/sample_model.png")
+```
+[[image source](https://rviews.rstudio.com/post/2019-07-01-3-big-data-paradigms-for-r_files/sample_model.png)]
+
+## Advantages 
+
+- **Speed**. Relative to working on your entire data set, working on just a sample can drastically decrease run times and increase iteration speed.
+- **Prototyping**. Even if you will eventually have to run your model on the entire data set, this can be a good way to refine hyperparameters and do feature engineering for your model.
+- **Packages**. Since you are working on a regular, in-memory data set, you can use all your favorite R packages.
+
+
+## Disadvantages
+
+- **Sampling**. Downsampling is not terribly difficult, but does need to be done with care to ensure that the sample is valid and that you have pulled enough points from the original data set.
+- **Scaling**. If you are using sample and model to prototype something that will later be run on the full data set, you will need to have a strategy (such as pushing compute to the data) for scaling your prototype version back to the full data set.
+- **Totals**. [Business Intelligence](https://en.wikipedia.org/wiki/Business_intelligence) (BI) -- or  _strategies and technologies used by enterprises for the data analysis of business information_ (e.g. data mining, reporting, predictive analytics, etc) -- tasks frequently answer questions about totals, like the count of all sales in a month. One of the other strategies is usually a better fit in this case.
+
+## Example 
+
+Let's say we want to model whether flights will be delayed or not.
+We will start with some minor cleaning of the data
+
+```{r}
+# Create is_delayed column in database
+df <- df %>%
+  mutate(is_delayed = arr_delay > 0, # Create is_delayed column
+         # Get just hour (currently formatted so 6 pm = 1800)
+         hour = sched_dep_time / 100) %>%
+  # Remove small carriers that make modeling difficult
+  filter(!is.na(is_delayed) & !carrier %in% c("OO", "HA"))
+
+df %>% 
+  count(is_delayed)
+```
+
+These classes are reasonably well balanced, but we going 
+to use logistic regression, so I will load a perfectly 
+balanced sample of 40,000 data points.
+
+For most databases, random sampling methods do not work
+smoothly with R. 
+
+```{r, eval=FALSE}
+df %>% 
+  sample_n(size = 1000)
+# Error: `tbl` must be a data frame, not a 
+# `tbl_SQLiteConnection/tbl_dbi/tbl_sql/tbl_lazy/tbl` object Call 
+# `rlang::last_error()` to see a backtrace
+```
+
+So it is not suggested to use `dplyr::sample_n()`
+or `dplyr::sample_frac()`. So we will have to be a little more manual.
+
+```{r}
+set.seed(1234)
+
+# Create a modeling dataset 
+df_mod <- df %>%
+  # Within each class
+  group_by(is_delayed) %>%
+  # Assign random rank
+  mutate(x = random() %>% row_number()) %>%
+  ungroup()
+```
+
+```{r}
+# Take first 20K for each class for training set
+df_train <- df_mod %>%
+  dplyr::group_by(is_delayed) %>%
+  dplyr::filter(x <= 20000) %>%
+  dplyr::collect() 
+```
+
+**Note**: `dplyr::collect()` forces a computation of a datbase
+query and retrieves data into a local tibble
+
+```{r}
+# Take next 5K for test set
+df_test <- df_mod %>%
+  dplyr::group_by(is_delayed) %>%
+  dplyr::filter(x > 20000 & x <= 25000) %>%
+  dplyr::collect() # again, this data is now loaded locally
+```
+
+```{r}
+# Double check I sampled right
+dplyr::count(df_train, is_delayed)
+dplyr::count(df_test, is_delayed)
+```
+
+Now let's build a model – let's see if we can predict whether 
+there will be a delay or not by the combination of the
+carrier, and the month of the flight.
+
+```{r}
+Sys.time()
+mod <- glm(is_delayed ~ carrier + as.character(month),
+           family = "binomial", data = df_train)
+Sys.time()
+```
+
+```{r}
+summary(mod)
+```
+
+```{r}
+# Out-of-Sample AUROC
+df_test$pred <- predict(mod, newdata = df_test)
+auc <- suppressMessages(pROC::auc(df_test$is_delayed, df_test$pred))
+auc
+```
+
+As you can see, this is not a great model (and we have already 
+shown how we can do better with this data), but that's not the point
+here! 
+
+Instead, we showed how to build a model on a small subset of a 
+big data set. Including sampling time, this took my laptop a
+second to run, making it easy to iterate quickly as I
+want to improve the model. After I'm happy with this model, 
+I could pull down a larger sample or even the entire data set
+if it's feasible, or do something with the model from the sample.
+
+
+
+# Chunk and Pull 
+
+A second strategy to _chunk_ the data into separable units and each
+chunk is pulled separately and operated on serially, in parallel, 
+or after recombining. This strategy is conceptually similar to 
+the [MapReduce algorithm](https://en.wikipedia.org/wiki/MapReduce) -- 
+or _MapReduce is a framework using which we can write applications to process huge amounts of data, in parallel, on large clusters in a reliable manner_ -- 
+[more here on MapReduce](https://www.tutorialspoint.com/hadoop/hadoop_mapreduce.htm). 
+Depending on the task at hand, the chunks might be time periods, 
+geographic units, or logical like separate businesses, departments, 
+products, or customer segments.
+
+```{r, echo=FALSE}
+knitr::include_graphics("https://rviews.rstudio.com/post/2019-07-01-3-big-data-paradigms-for-r_files/chunk_pull.png")
+```
+[[image source](https://rviews.rstudio.com/post/2019-07-01-3-big-data-paradigms-for-r_files/chunk_pull.png)]
+
+## Advantages
+
+- **Full data set**. The entire data set gets used.
+- **Parallelization**. If the chunks are run separately, the problem is easy to treat as [embarassingly parallel](https://en.wikipedia.org/wiki/Embarrassingly_parallel) and make use of parallelization to speed runtimes.
+
+## Disadvantages
+
+- **Need Chunks**. Your data needs to have separable chunks for chunk and pull to be appropriate.
+- **Pull All Data**. Eventually have to pull in all data, which may still be very time and memory intensive.
+- **Stale Data**. The data may require periodic refreshes from the database to stay up-to-date since you’re saving a version on your local machine.
+
+## Example
+
+In this case, I want to build another model of on-time arrival, 
+but I want to do it per-carrier. This is exactly the kind of use 
+case that is ideal for chunk and pull. I’m going to separately
+pull the data in by carrier and run the model on each carrier's data.
+
+I am going to start by just getting the complete list of the carriers.
+
+```{r}
+# Get all unique carriers
+carriers <- df %>% 
+  select(carrier) %>% 
+  distinct() %>% 
+  pull(carrier)
+
+carriers
+```
+
+Now, I will write a function that
+
+- takes the name of a carrier as input
+- pulls the data for that carrier into R
+- splits the data into training and test
+- trains the model
+- outputs the out-of-sample AUROC (a common measure of model quality)
+
+```{r}
+carrier_model <- function(carrier_name) {
+  # Pull a chunk of data
+  df_mod <- df %>%
+    dplyr::filter(carrier == carrier_name) %>%
+    dplyr::collect()
+  
+  # Split into training and test
+  split <- df_mod %>%
+    rsample::initial_split(prop = 0.9, strata = "is_delayed") %>% 
+    suppressMessages()
+  
+  # Get training data
+  df_train <- split %>% 
+                rsample::training()
+  
+  # Train model
+  mod <- glm(is_delayed ~ as.character(month),
+             family = "binomial", data = df_train)
+  
+  # Get out-of-sample AUROC
+  df_test <- split %>% 
+                rsample::testing()
+  df_test$pred <- predict(mod, newdata = df_test)
+  suppressMessages(auc <- pROC::auc(df_test$is_delayed ~ df_test$pred))
+  
+  auc
+}
+```
+
+Now, I am going to actually run the carrier model function 
+across each of the carriers. This code runs pretty quickly, 
+and so I do not think the overhead of parallelization would be
+worth it. But if I wanted to, I would replace the `lapply` call 
+below with a parallel backend or use the `futures` package. 
+
+```{r}
+set.seed(1234)
+mods <- lapply(carriers, carrier_model) %>%
+  suppressMessages()
+
+names(mods) <- carriers
+```
+
+Let's look at the results.
+
+```{r}
+mods
+```
+
+So these models (again) are a little better than random chance. 
+The point was that we utilized the chunk and pull strategy to 
+pull the data separately by logical units and building a
+model on each chunk.
+
+
+# Push Compute to Data 
+
+A third strategy is push some of the computing to where the data are 
+stored before moving a subset of the data out of wherever it is stored
+and into R. Imagine the data is compressed on a database somwhere. 
+It is often possible to obtain significant speedups simply by doing 
+summarization or filtering in the database before pulling the data into R.
+
+Sometimes, more complex operations are also possible, including
+computing histogram and raster maps with 
+[`dbplot`](https://db.rstudio.com/dbplot/), building a model with 
+[`modeldb`](https://cran.r-project.org/web/packages/modeldb/index.html), and generating predictions from machine learning models with 
+[`tidypredict`](https://db.rstudio.com/tidypredict/).
+
+```{r, echo=FALSE}
+knitr::include_graphics("https://rviews.rstudio.com/post/2019-07-01-3-big-data-paradigms-for-r_files/chunk_pull.png")
+```
+[[image source](https://rviews.rstudio.com/post/2019-07-01-3-big-data-paradigms-for-r_files/chunk_pull.png)]
+
+## Advantages
+
+- **Use the Database**. Takes advantage of what databases are often best at: quickly summarizing and filtering data based on a query.
+- **More Info, Less Transfer**. By compressing before pulling data back to R, the entire data set gets used, but transfer times are far less than moving the entire data set.
+
+## Disadvantages
+
+- **Database Operations**. Depending on what database you are using, some operations might not be supported.
+- **Database Speed**. In some contexts, the limiting factor for data analysis is the speed of the database itself, and so pushing more work onto the database is the last thing analysts want to do.
+
+## Example 
+
+In this case, I am doing a pretty simple BI task - plotting the 
+proportion of flights that are late by the hour of departure 
+and the airline.
+
+Just by way of comparison, let's run this first the naive 
+way -– pulling all the data to my system and then doing my 
+data manipulation to plot.
+
+```{r}
+system.time(
+  df_plot <- df %>%
+    dplyr::collect() %>%
+    dplyr::group_by(carrier, sched_dep_time) %>%
+    # Get proportion per carrier-time
+    dplyr::summarize(delay_pct = mean(is_delayed, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    # Change string times into actual times
+    dplyr::mutate(sched_dep_time =
+                    stringr::str_pad(sched_dep_time, 4, "left", "0") %>% 
+             strptime("%H%M") %>% 
+             as.POSIXct())) -> timing1
+```
+
+Now that wasn't too bad, just `r timing1[3]` seconds on my laptop.
+
+But let's see how much of a speedup we can get from chunk and pull. 
+The conceptual change here is significant - I'm doing as much 
+work as possible in the SQLite server now instead of locally. 
+But using `dplyr` means that the code change is minimal. The 
+only difference in the code is that the `collect()` call got
+moved down by a few lines (to below `ungroup()`).
+
+```{r}
+system.time(
+  df_plot <- df %>%
+    dplyr::group_by(carrier, sched_dep_time) %>%
+    # Get proportion per carrier-time
+    dplyr::summarize(delay_pct = mean(is_delayed, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::collect() %>%
+    # Change string times into actual times
+    dplyr::mutate(sched_dep_time = 
+                    stringr::str_pad(sched_dep_time, 4, "left", "0") %>% 
+             strptime("%H%M") %>% 
+             as.POSIXct())) -> timing2
+```
+
+It might have taken you the same time to read this code as the 
+last chunk, but this took only `r timing2[3]` seconds to run, 
+almost an order of magnitude faster! That's pretty good for
+just moving one line of code.
+
+Now that we have done a speed comparison, we can create the 
+nice plot we all came for.
+
+```{r, out.width = '90%'}
+df_plot %>%
+  mutate(carrier = paste0("Carrier: ", carrier)) %>%
+  ggplot(aes(x = sched_dep_time, y = delay_pct)) +
+  geom_line() +
+  facet_wrap("carrier") +
+  ylab("Proportion of Flights Delayed") +
+  xlab("Time of Day") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_datetime(date_breaks = "4 hours", 
+                   date_labels = "%H")
+```
+
+It looks to me like flights later in the day might be 
+a little more likely to experience delays, which we 
+saw in our last class with this data. However, here we 
+have learned how to work with data not necessarily 
+loaded in memory. 
+
+
+
