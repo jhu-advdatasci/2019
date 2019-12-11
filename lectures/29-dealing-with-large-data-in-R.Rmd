@@ -24,14 +24,15 @@ First, we load a few R packages
 suppressPackageStartupMessages({
   library(here)
   library(dbplyr)
-  library(rhdf5)
+  library(rhdf5) # install with BiocManager::install("rhdf5")
+  library(HDF5Array) # install with BiocManager::install("HDF5Array")
   library(pryr)
   library(tidyverse)
   library(rsample)
 })
 ```
 
-The lecture material came from these resources: 
+A lot of this lecture material came from these resources: 
 
 - [A great blog post by Alex Gold from RStudio](https://rviews.rstudio.com/2019/07/17/3-big-data-strategies-for-r/)
 
@@ -80,7 +81,7 @@ than reading from a standard hard drive and over
 . This is an especially big problem early in developing a 
 model or analytical project, when data might have to be pulled repeatedly.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = '90%'}
 knitr::include_graphics("https://blog.codinghorror.com/content/images/2014/May/internet-latency-usa.png")
 ```
 
@@ -115,12 +116,112 @@ However, this time we will cache the data from the `nycflights13`
 package in a form we are already familiar with (SQLite databases). 
 But there are many other data formats that you might encounter including: 
 
+- `.sqlite` (SQL database). Talk more about this in a bit. 
 - `.csv` (comma separated values). Good for storing rectangular data. However, can really slow to read and write, making them (often) unusable for large datasets. 
 - `.json` (JavaScript object notation). Key-value pairs in a partially structured format
 - `.parquet` (Apache Parquet). Developed by Cloudera and Twitter to serve as a column-based storage format, optimized for work with multi-column datasets. Can be used for [Spark data](http://spark.apache.org) or other tools in the Hadoop ecosystem. When you store data in parquet format, you actually get a whole directory worth of files. The data is split across multiple `.parquet` files, allowing it to be easily stored on multiple machines, and there are some metadata files too, describing the contents of each column. Can use [`sparklyr`](https://spark.rstudio.com) to import `.parquet` files
 - `.avro` (Apache Avro). Released by the Hadoop working group in 2009. It is a row-based format that is highly splittable. It is also described as a data serialization system similar to Java Serialization. The schema is stored in JSON format, while the data is stored in binary format, minimizing file size and maximizing efficiency. Can use [`sparkavro`](https://cran.r-project.org/web/packages/sparkavro/index.html) to import `.avro` files. 
-- `.zarr`. [Zarr files](https://zarr.readthedocs.io/en/stable/) are a modern library and data format for storing chunked, compressed N-dimensional data. Still very much in development though. 
-- `.h5` (Hierarchical Data Format or HDF5). Mature (20 years old) library and data format which is also designed to handle chunked compressed N-dimensional data. Can use [`rhdf5`](https://www.bioconductor.org/packages/rhdf5) to read and write `.h5` files.
+- `.zarr` (Zarr). [Zarr files](https://zarr.readthedocs.io/en/stable/) are a modern library and data format for storing chunked, compressed N-dimensional data in Python, but can work with these files using reticulate. Still very much in development though. 
+- `.h5` (Hierarchical Data Format or HDF5). Mature (20 years old) library and data format which is also designed to handle chunked compressed N-dimensional data. Can use [`rhdf5`](https://www.bioconductor.org/packages/rhdf5) and [`HDF5Array`](https://www.bioconductor.org/packages/HDF5Array) to read and write `.h5` files.
+
+Let's give a brief example of one of these other file types before
+diving into how we will use the `nycflights13` data today. 
+
+#### HDF5 files 
+
+Let's create two large datasets and check the sizes of the
+data in memory.
+```{r}
+A = matrix(rpois(1e8, lambda = 1), nr=1e6, nc=1e2)
+B = matrix(rpois(1e6, lambda = 10), nr=1e3, nc=1e3)
+
+pryr::object_size(A)
+pryr::object_size(B)
+```
+
+Now let's save them to an HDF5 file with different 
+chunk sizes. In the first case we want to able to 
+read from the file along columns and in the second 
+case we want to read from the file along the rows. 
+
+The `chunkdim` argument controls size of chunks that
+you can write the data to disk. You will also end up reading
+from disk in these chunks. You can also control the 
+compression behavior (0 to 9 with 9 being most compressed). 
+The trade-off is if you have large compression, it's good for 
+storing a smaller file on disk, but it takes longer to read
+and write from disk. 
+
+```{r}
+if(file.exists(here("data", "bigdata.h5"))){
+  file.remove(here("data", "bigdata.h5"))
+}
+
+A_h5 <- writeHDF5Array(x = A, 
+            filepath = here("data", "bigdata.h5"), name = "A", 
+            chunkdim = c(1e6,1), verbose = TRUE, level = 6)
+B_h5 <- writeHDF5Array(x = B, 
+            filepath = here("data", "bigdata.h5"), name = "B", 
+            chunkdim = c(1,1e3), verbose = TRUE, level = 6)
+```
+
+If we look at the objects `A_h5` and `B_h5`, we see they 
+feel like matrices that we are familiar with. 
+```{r}
+A_h5
+```
+
+```{r}
+B_h5
+```
+
+But they are of a different class `HDF5Matrix` instead of `matrix`
+
+```{r}
+class(A)
+class(B)
+```
+
+We can also see what is in our `.h5` file using the `h5ls()` function
+
+```{r}
+rhdf5::h5ls(here("data", "bigdata.h5"))
+```
+
+Finally, we can compare the object sizes
+```{r}
+pryr::object_size(A)
+pryr::object_size(B)
+
+pryr::object_size(A_h5)
+pryr::object_size(B_h5)
+```
+
+This is important because if we remove all the matrices, we 
+we can just load in the HDF5 matrices 
+
+```{r}
+rm(A,B, A_h5, B_h5)
+```
+
+```{r}
+A_h5 <- HDF5Array(filepath = here("data", "bigdata.h5"), name = "A")
+A_h5 
+```
+
+If you want to learn more how to operate with HDF5 files, check out the 
+[rhdf5](https://www.bioconductor.org/packages/rhdf5) and [HDF5Array](https://www.bioconductor.org/packages/HDF5Array) packages. 
+
+Let's clean up our space
+
+```{r}
+if(file.exists(here("data", "bigdata.h5"))){
+  file.remove(here("data", "bigdata.h5"))
+}
+```
+
+
+### SQLite databases
 
 OK so as mentioned above, let's use the SQLite format to demonstrate the 
 strategies for dealing with large data. However, they can easily transfer 
@@ -210,14 +311,14 @@ We will start with some minor cleaning of the data
 ```{r}
 # Create is_delayed column in database
 df <- df %>%
-  mutate(is_delayed = arr_delay > 0, # Create is_delayed column
+ dplyr::mutate(is_delayed = arr_delay > 0, # Create is_delayed column
          # Get just hour (currently formatted so 6 pm = 1800)
          hour = sched_dep_time / 100) %>%
   # Remove small carriers that make modeling difficult
-  filter(!is.na(is_delayed) & !carrier %in% c("OO", "HA"))
+  dplyr::filter(!is.na(is_delayed) & !carrier %in% c("OO", "HA"))
 
 df %>% 
-  count(is_delayed)
+  dplyr::count(is_delayed)
 ```
 
 These classes are reasonably well balanced, but we going 
@@ -229,7 +330,7 @@ smoothly with R.
 
 ```{r, eval=FALSE}
 df %>% 
-  sample_n(size = 1000)
+  dplyr::sample_n(size = 1000)
 # Error: `tbl` must be a data frame, not a 
 # `tbl_SQLiteConnection/tbl_dbi/tbl_sql/tbl_lazy/tbl` object Call 
 # `rlang::last_error()` to see a backtrace
@@ -244,10 +345,10 @@ set.seed(1234)
 # Create a modeling dataset 
 df_mod <- df %>%
   # Within each class
-  group_by(is_delayed) %>%
+  dplyr::group_by(is_delayed) %>%
   # Assign random rank
-  mutate(x = random() %>% row_number()) %>%
-  ungroup()
+  dplyr::mutate(x = random() %>% row_number()) %>%
+  dplyr::ungroup()
 ```
 
 ```{r}
@@ -350,9 +451,9 @@ I am going to start by just getting the complete list of the carriers.
 ```{r}
 # Get all unique carriers
 carriers <- df %>% 
-  select(carrier) %>% 
-  distinct() %>% 
-  pull(carrier)
+  dplyr::select(carrier) %>% 
+  dplyr::distinct() %>% 
+  dplyr::pull(carrier)
 
 carriers
 ```
@@ -509,15 +610,15 @@ nice plot we all came for.
 
 ```{r, out.width = '90%'}
 df_plot %>%
-  mutate(carrier = paste0("Carrier: ", carrier)) %>%
+  dplyr::mutate(carrier = paste0("Carrier: ", carrier)) %>%
   ggplot(aes(x = sched_dep_time, y = delay_pct)) +
-  geom_line() +
-  facet_wrap("carrier") +
-  ylab("Proportion of Flights Delayed") +
-  xlab("Time of Day") +
-  scale_y_continuous(labels = scales::percent) +
-  scale_x_datetime(date_breaks = "4 hours", 
-                   date_labels = "%H")
+    geom_line() +
+    facet_wrap("carrier") +
+    ylab("Proportion of Flights Delayed") +
+    xlab("Time of Day") +
+    scale_y_continuous(labels = scales::percent) +
+    scale_x_datetime(date_breaks = "4 hours", 
+                    date_labels = "%H")
 ```
 
 It looks to me like flights later in the day might be 
@@ -526,5 +627,15 @@ saw in our last class with this data. However, here we
 have learned how to work with data not necessarily 
 loaded in memory. 
 
+# Summary 
 
+There are lots of ways you can work with large data in R. A 
+few that we learned about today include 
+
+- Sample and model 
+- Chunk and pull 
+- Push compute to data
+
+Hopefully this will help the next time you encounter a large 
+dataset in R. 
 
